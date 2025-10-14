@@ -10,31 +10,67 @@ window.api.getSeries().then(series => {
 
 function renderSeriesList() {
     list.innerHTML = '';
+    let index = 0
     for (const seriesName in seriesData) {
-        const item = document.createElement('div');
-        item.textContent = seriesName;
-        item.classList.add('video-item');
-        item.onclick = () => renderEpisodeList(seriesName);
-        list.appendChild(item);
+        const divElement = document.createElement('div');
+        const moveRight = document.createElement('div');
+        const moveLeft = document.createElement('div');
+        const spanElement = document.createElement('span')
+        const paragrapyElement = document.createElement('p')
+
+        // setas
+        moveRight.className = 'move-right move-right'
+        moveRight.textContent = '>'
+
+        moveLeft.className = 'move-left move-left'
+        moveLeft.textContent = '<'
+
+        spanElement.className = 'container-span'
+        paragrapyElement.className = 'titulo-element'
+        paragrapyElement.textContent = seriesName;
+        divElement.classList.add('container-video-item');
+
+        divElement.appendChild(moveRight)
+        divElement.appendChild(moveLeft)
+        spanElement.appendChild(paragrapyElement)
+        spanElement.appendChild(divElement);
+        list.appendChild(spanElement)
+
+        seriesData[seriesName].forEach(file => {
+            const containerEP = document.createElement('div')
+            const nameElement = document.createElement('p')
+            const tambElement = document.createElement('video')
+
+
+            nameElement.textContent = file
+            nameElement.className = 'title-EP'
+            tambElement.className = 'video-tamb-EP'
+            tambElement.src = `videos/${seriesName}/${file}`
+            containerEP.classList.add('video-item')
+            
+            containerEP.appendChild(tambElement)
+            containerEP.appendChild(nameElement)
+            divElement.appendChild(containerEP)
+        })
     }
 }
 
-function renderEpisodeList(seriesName) {
-    list.innerHTML = '';
-    currentSeries = seriesName;
+// function renderEpisodeList(seriesName) {
+//     list.innerHTML = '';
+//     currentSeries = seriesName;
     
-    seriesData[seriesName].forEach(file => {
-        const ep = document.createElement('div');
-        ep.textContent = file;
-        ep.classList.add('video-item');
-        ep.onclick = () => playVideo(seriesName, file);
-        list.appendChild(ep);
-    });
-}
+//     seriesData[seriesName].forEach(file => {
+//         const ep = document.createElement('div');
+//         ep.textContent = file;
+//         ep.classList.add('video-item');
+//         ep.onclick = () => playVideo(seriesName, file);
+//         list.appendChild(ep);
+//     });
+// }
 
 function playVideo(seriesName, file) {
     video.src = `videos/${seriesName}/${file}`;
-    video.play();
+    //video.play();
 
     // Salvar progresso
     video.ontimeupdate = () => {
@@ -57,7 +93,7 @@ function playVideo(seriesName, file) {
 // Restaurar progresso
 window.addEventListener('DOMContentLoaded', () => {
     const progress = JSON.parse(localStorage.getItem('progress') || '{}');
-    if (progress.seriesName && seriesData[progress.seriesName]) {
+    if ( 1 === 2 && progress.seriesName && seriesData[progress.seriesName]) {
         playVideo(progress.seriesName, progress.file);
         video.currentTime = progress.time || 0;
     }
