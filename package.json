@@ -1,0 +1,14 @@
+{
+  "name": "playapp",
+  "version": "1.0.0",
+  "description": "Um aplicativo que salva os dados da sua serie ou filme, salvando onde voce parou e em quantos minutos",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Wellinghton",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^38.2.2"
+  }
+}
