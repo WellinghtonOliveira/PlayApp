@@ -9,6 +9,7 @@
   "author": "Wellinghton",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^38.2.2"
+    "electron": "^38.2.2",
+    "electron-reload": "^2.0.0-alpha.1"
   }
 }

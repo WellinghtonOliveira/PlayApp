@@ -1,5 +1,6 @@
 # Dependências
 node_modules/
+renderer/videos/
 
 # Build/output
 dist/
