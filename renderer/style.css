@@ -26,6 +26,34 @@ main {
     overflow-y: auto;
 }
 
+.series::-webkit-scrollbar {
+    width: 20px;
+}
+
+.series::-webkit-scrollbar-track {
+    background: rgba(245, 230, 230, .7);
+    border-radius: 5px;
+}
+
+.series::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        90deg,
+        rgba(15, 15, 15, 1),
+        rgba(50, 50, 50, 1),
+        rgba(15, 15, 15, 1)
+    );
+    border-radius: 5px;
+}
+
+.series::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(15, 15, 15, 1),
+        rgba(55, 50, 50, 1),
+        rgba(15, 15, 15, 1)
+    );
+}
+
 #video-list {
     width: 100%;
     height: auto;
@@ -60,7 +88,8 @@ main {
     overflow-x: hidden;
 }
 
-.move-right, .move-left {
+.move-right,
+.move-left {
     position: absolute;
     background-color: rgba(0, 0, 0, 0.3);
     color: rgba(0, 0, 0, 0.5);
@@ -75,8 +104,13 @@ main {
     font-weight: bold;
 }
 
-.move-right { right: 0px; }
-.move-left {left: 3px;}
+.move-right {
+    right: 0px;
+}
+
+.move-left {
+    left: 3px;
+}
 
 .video-item {
     background-color: gray;
@@ -117,13 +151,11 @@ main {
     height: auto;
     min-height: 80px;
     padding: 10px;
-    background: linear-gradient(
-        rgba(35, 35, 35, 1),
-        rgba(40, 40, 40, 1),
-        rgba(50, 50, 50, 1),
-        rgba(40, 40, 40, 1),
-        rgba(25, 25, 25, 1)
-    );
+    background: linear-gradient(rgba(35, 35, 35, 1),
+            rgba(40, 40, 40, 1),
+            rgba(50, 50, 50, 1),
+            rgba(40, 40, 40, 1),
+            rgba(25, 25, 25, 1));
 }
 
 .video-player {
@@ -139,9 +171,69 @@ main {
 
 .controles {
     position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     right: 30px;
-    width: 300px;
-    height: 10px;
-    background-color: red;
-
+    bottom: 15px;
+    min-width: 300px;
+    height: auto;
 }
+
+.container-controle {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    right: 30px;
+    bottom: 15px;
+    min-width: 300px;
+    height: auto;
+}
+
+#voltar,
+#avancar {
+    min-width: 30px;
+    text-align: left;
+    align-content: center;
+    height: auto;
+    letter-spacing: -8px;
+    font-size: 22px;
+    text-shadow: 0 0 5px rgba(245, 245, 245, 0.4);
+}
+
+#play,
+#pause {
+    margin: 0 45px;
+    min-width: 20px;
+    text-align: center;
+    align-content: center;
+    width: auto;
+    height: auto;
+    font-size: 22px;
+    text-shadow: 0 0 5px rgba(245, 245, 245, 0.4);
+}
+
+#play {
+    margin-right: 3px;
+}
+
+#pause {
+    margin-left: 3px;
+}
+
+.container-progresso {
+    background-color: rgba(0, 0, 255, 0.2);
+    margin-top: 10px;
+    width: 100%;
+    height: auto;
+    box-shadow: 0 0 3px rgba(245, 245, 245, 0.2);
+}
+
+#barra-progresso {
+    width: 50%;
+    height: 3px;
+    background-color: rgba(114, 0, 0, 0.5);
+    border-radius: 2px;
+}
+
+
