@@ -26,37 +26,11 @@ main {
     overflow-y: auto;
 }
 
-.series::-webkit-scrollbar {
-    width: 20px;
-}
-
-.series::-webkit-scrollbar-track {
-    background: rgba(245, 230, 230, .7);
-    border-radius: 5px;
-}
-
-.series::-webkit-scrollbar-thumb {
-    background: linear-gradient(
-        90deg,
-        rgba(15, 15, 15, 1),
-        rgba(50, 50, 50, 1),
-        rgba(15, 15, 15, 1)
-    );
-    border-radius: 5px;
-}
-
-.series::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(
-        90deg,
-        rgba(15, 15, 15, 1),
-        rgba(55, 50, 50, 1),
-        rgba(15, 15, 15, 1)
-    );
-}
 
 #video-list {
     width: 100%;
     height: auto;
+    margin-bottom: 130px;
     display: flex;
     flex-direction: column;
 }
@@ -67,6 +41,7 @@ main {
     width: 100%;
     height: auto;
     padding: 10px;
+    padding-right: 0;
 }
 
 .titulo-element {
@@ -237,3 +212,31 @@ main {
 }
 
 
+
+.series::-webkit-scrollbar {
+    width: 6px;
+}
+
+.series::-webkit-scrollbar-track {
+    background: rgba(245, 230, 230, .7);
+    border-radius: 5px;
+}
+
+.series::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        90deg,
+        rgba(15, 15, 15, 1),
+        rgba(50, 50, 50, 1),
+        rgba(15, 15, 15, 1)
+    );
+    border-radius: 5px;
+}
+
+.series::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(15, 15, 15, 1),
+        rgba(55, 50, 50, 1),
+        rgba(15, 15, 15, 1)
+    );
+}

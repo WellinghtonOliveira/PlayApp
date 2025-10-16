@@ -10,7 +10,6 @@ window.api.getSeries().then(series => {
 
 function renderSeriesList() {
     list.innerHTML = '';
-    let index = 0
     for (const seriesName in seriesData) {
         const divElement = document.createElement('div');
         const moveRight = document.createElement('div');
@@ -25,6 +24,7 @@ function renderSeriesList() {
         moveLeft.className = 'move-left'
         moveLeft.textContent = '<'
 
+       
         spanElement.className = 'container-span'
         paragrapyElement.className = 'titulo-element'
         paragrapyElement.textContent = seriesName;
@@ -53,20 +53,10 @@ function renderSeriesList() {
             divElement.appendChild(containerEP)
         })
     }
+
+
 }
 
-// function renderEpisodeList(seriesName) {
-//     list.innerHTML = '';
-//     currentSeries = seriesName;
-    
-//     seriesData[seriesName].forEach(file => {
-//         const ep = document.createElement('div');
-//         ep.textContent = file;
-//         ep.classList.add('video-item');
-//         ep.onclick = () => playVideo(seriesName, file);
-//         list.appendChild(ep);
-//     });
-// }
 
 function playVideo(seriesName, file) {
     video.src = `videos/${seriesName}/${file}`;
