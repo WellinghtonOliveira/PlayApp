@@ -19,10 +19,10 @@ function renderSeriesList() {
         const paragrapyElement = document.createElement('p')
 
         // setas
-        moveRight.className = 'move-right move-right'
+        moveRight.className = 'move-right'
         moveRight.textContent = '>'
 
-        moveLeft.className = 'move-left move-left'
+        moveLeft.className = 'move-left'
         moveLeft.textContent = '<'
 
         spanElement.className = 'container-span'
