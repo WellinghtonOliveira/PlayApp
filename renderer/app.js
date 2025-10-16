@@ -10,7 +10,7 @@ window.api.getSeries().then(series => {
 
 function renderSeriesList() {
     list.innerHTML = '';
-    for (const seriesName in seriesData) {
+    for (const seriesName in seriesData) {// escreve as series pelo nome da pasta
         const divElement = series()
         const spanElement = individualSeries()
         const paragrapyElement = nomeEpsodios(seriesName)
@@ -20,7 +20,7 @@ function renderSeriesList() {
         spanElement.appendChild(divElement);
         list.appendChild(spanElement)
 
-        seriesData[seriesName].forEach(file => {
+        seriesData[seriesName].forEach(file => {// escreve os epsodios
             const { containerEP, nameElement, tambElement } = epsodios(file, seriesName)
 
             containerEP.appendChild(tambElement)
@@ -119,7 +119,8 @@ function playVideo(seriesName, file) {
 // Restaurar progresso
 window.addEventListener('DOMContentLoaded', () => {
     const progress = JSON.parse(localStorage.getItem('progress') || '{}');
-    if (1 === 2 && progress.seriesName && seriesData[progress.seriesName]) {
+    console.log(seriesData)
+    if (1 === 1 && progress.seriesName && seriesData[progress.seriesName]) {
         playVideo(progress.seriesName, progress.file);
         video.currentTime = progress.time || 0;
     }
