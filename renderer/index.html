@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <link rel="stylesheet" href="./style.css">
 
@@ -7,24 +8,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Play</title>
 </head>
+
 <body>
-    
+
     <div class="container">
         <main>
             <div class="series">
                 <aside id="video-list">
                 </aside>
             </div>
-            
+
             <section class="ultimo-video" id="player">
                 <video class="video-player">
                     <source src="#" type="video/mp4">
                 </video>
-                <div class="controles"></div>
+                <div class="controles">
+                    <div class="container-controle">
+                        <div id="voltar">&#9664;&#9664;</div>
+                        <div id="play">&#9654;</div>
+                        <div id="pause">&#10073;&#10073;</div>
+                        <div id="avancar">&#9654;&#9654;</div>
+                    </div>
+                    
+                    <div class="container-progresso">
+                        <div id="barra-progresso"></div>
+                    </div>
+                </div>
             </section>
         </main>
     </div>
 
     <script src="app.js"></script>
 </body>
+
 </html>
