@@ -1,5 +1,13 @@
+const play = document.getElementById("play").addEventListener("click", contPlay())
+const voltar = document.getElementById("voltar").addEventListener("click", contVoltar())
+const pause = document.getElementById("pause").addEventListener("click", contPause())
+const avancar = document.getElementById("avancar").addEventListener("click", contAvancar())
+const barraProgresso = document.getElementById("barra-progresso")
+
+const progress = JSON.parse(localStorage.getItem('progress') || '{}');
 const video = document.querySelector('#video-anteriormente');
 const list = document.querySelector('#video-list');
+let tamanhoVideoAtual = 0
 let currentSeries = '';
 let seriesData = {};
 
@@ -7,6 +15,15 @@ window.api.getSeries().then(series => {
     seriesData = series;
     renderSeriesList();
 });
+
+//controladores
+function contPlay() { }
+
+function contVoltar() { }
+
+function contPause() { }
+
+function contAvancar() { }
 
 function renderSeriesList() {
     list.innerHTML = '';
@@ -24,6 +41,9 @@ function renderSeriesList() {
         seriesData[seriesName].forEach(file => {// escreve os epsodios
             const { containerEP, nameElement, tambElement } = epsodios(file, seriesName)
 
+            containerEP.onclick = () => playVideo(seriesName, file);
+
+
             containerEP.appendChild(tambElement)
             containerEP.appendChild(nameElement)
             divElement.appendChild(containerEP)
@@ -31,13 +51,13 @@ function renderSeriesList() {
     }
 }
 
-// Epsodios
+// Epsodios 
 const epsodios = (file, seriesName) => {
     const containerEP = document.createElement('div')
     const nameElement = document.createElement('p')
     const tambElement = document.createElement('video')
 
-
+    //tambElement.controls = true
     nameElement.textContent = file
     nameElement.className = 'title-EP'
     tambElement.className = 'video-tamb-EP'
@@ -98,18 +118,26 @@ const moveL = () => {
 function playVideo(seriesName, file) {
     video.src = `videos/${seriesName}/${file}`;
 
-    video.controls
+    video.addEventListener('loadedmetadata', () => {
+        console.log('Duração total:', video.duration, 'segundos');
+        tamanhoVideoAtual = video.duration
+        atualizaBarra(progress.time)
+    });
 
-    //video.play();
+    video.controls = true
+
+    video.addEventListener("timeupdate", console.log(progress.time))
+
+    video.play();
 
     // Salvar progresso
-    // video.ontimeupdate = () => {
-    //     localStorage.setItem('progress', JSON.stringify({
-    //         seriesName,
-    //         file,
-    //         time: video.currentTime
-    //     }));
-    // };
+    video.ontimeupdate = () => {
+        localStorage.setItem('progress', JSON.stringify({
+            seriesName,
+            file,
+            time: video.currentTime
+        }));
+    };
 
     // Próximo episódio automaticamente
     // video.onended = () => {
@@ -122,7 +150,6 @@ function playVideo(seriesName, file) {
 
 async function loadDataSets() {
     return new Promise((resolve) => {
-
         const check = setInterval(() => {
             if (seriesData != {}) {
                 clearInterval(check);
@@ -132,13 +159,24 @@ async function loadDataSets() {
     });
 }
 
+function atualizaBarra(valorAtual) {
+    if (valorAtual > tamanhoVideoAtual) {
+        tamanhoVideoAtual = valorAtual;
+    }
+
+    const porcentagem = (valorAtual / tamanhoVideoAtual) * 100;
+
+    barraProgresso.style.width = porcentagem + '%'
+}
+
 // Restaurar progresso
 window.addEventListener('DOMContentLoaded', async () => {
     const dado = await loadDataSets()
-    const progress = JSON.parse(localStorage.getItem('progress') || '{}');
+
+    if (progress.time >= 0) atualizaBarra(progress.time)
+    else atualizaBarra(0)
 
     if (dado && progress.seriesName && seriesData[progress.seriesName]) {
-
         playVideo(progress.seriesName, progress.file);
         video.currentTime = progress.time || 0;
     }
