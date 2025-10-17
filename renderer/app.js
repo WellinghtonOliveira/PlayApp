@@ -1,14 +1,15 @@
-const play = document.getElementById("play").addEventListener("click", contPlay())
-const voltar = document.getElementById("voltar").addEventListener("click", contVoltar())
-const pause = document.getElementById("pause").addEventListener("click", contPause())
-const avancar = document.getElementById("avancar").addEventListener("click", contAvancar())
-const barraProgresso = document.getElementById("barra-progresso")
+document.getElementById("play").addEventListener("click", contPlay)
+document.getElementById("voltar").addEventListener("click", contVoltar)
+document.getElementById("pause").addEventListener("click", contPause)
+document.getElementById("avancar").addEventListener("click", contAvancar)
 
-const progress = JSON.parse(localStorage.getItem('progress') || '{}');
+const barraProgresso = document.getElementById("barra-progresso")
 const video = document.querySelector('#video-anteriormente');
 const list = document.querySelector('#video-list');
+
+
+let progress
 let tamanhoVideoAtual = 0
-let currentSeries = '';
 let seriesData = {};
 
 window.api.getSeries().then(series => {
@@ -16,14 +17,35 @@ window.api.getSeries().then(series => {
     renderSeriesList();
 });
 
+function controladorSetaOverflow() {}
+// moveSetaRigth.addEventListener("click", function move() {})
+// const moveSetaLeft = document.querySelectorAll(".move-left")
+// const moveSetaRigth = document.querySelectorAll(".move-right")
+
 //controladores
-function contPlay() { }
+function contPlay() {
+    video.play()
+}
 
-function contVoltar() { }
+function contPause() {
+    video.pause()
+}
 
-function contPause() { }
+function contVoltar() {
+    const episodes = seriesData[progress.seriesName];
+    const currentIndex = episodes.indexOf(progress.file);
+    const retrocesso = episodes[currentIndex - 1];
+    if (retrocesso) carregandoVideo(progress.seriesName, retrocesso);
+    video.play()
+}
 
-function contAvancar() { }
+function contAvancar() {
+    const episodes = seriesData[progress.seriesName];
+    const currentIndex = episodes.indexOf(progress.file);
+    const proximo = episodes[currentIndex + 1];
+    if (proximo) carregandoVideo(progress.seriesName, proximo);
+    video.play()
+}
 
 function renderSeriesList() {
     list.innerHTML = '';
@@ -41,14 +63,15 @@ function renderSeriesList() {
         seriesData[seriesName].forEach(file => {// escreve os epsodios
             const { containerEP, nameElement, tambElement } = epsodios(file, seriesName)
 
-            containerEP.onclick = () => playVideo(seriesName, file);
-
+            containerEP.onclick = () => carregandoVideo(seriesName, file)
 
             containerEP.appendChild(tambElement)
             containerEP.appendChild(nameElement)
             divElement.appendChild(containerEP)
         })
     }
+
+    controladorSetaOverflow()
 }
 
 // Epsodios 
@@ -115,37 +138,42 @@ const moveL = () => {
     return moveLeft
 }
 
-function playVideo(seriesName, file) {
+const coletaProgressAtual = () => {
+    progress = JSON.parse(localStorage.getItem('progress') || '{}')
+}
+
+function carregandoVideo(seriesName, file) {
+    const progressHistory = JSON.parse(localStorage.getItem('progressHistory') || '{}');
+    const savedTime = progressHistory[`${seriesName}/${file}`] || 0;
+
+    progress = { seriesName, file, time: savedTime };
+    localStorage.setItem('progress', JSON.stringify(progress));
+
     video.src = `videos/${seriesName}/${file}`;
 
-    video.addEventListener('loadedmetadata', () => {
-        console.log('Duração total:', video.duration, 'segundos');
-        tamanhoVideoAtual = video.duration
-        atualizaBarra(progress.time)
-    });
+    const onLoadedMetadata = () => {
+        tamanhoVideoAtual = video.duration;
+        video.currentTime = savedTime;
+        atualizaBarra(savedTime);
+    };
 
-    video.controls = true
+    video.removeEventListener('loadedmetadata', onLoadedMetadata);
+    video.addEventListener('loadedmetadata', onLoadedMetadata);
 
-    video.addEventListener("timeupdate", console.log(progress.time))
-
-    video.play();
-
-    // Salvar progresso
     video.ontimeupdate = () => {
+        const currentTime = video.currentTime;
+        atualizaBarra(currentTime);
+
         localStorage.setItem('progress', JSON.stringify({
             seriesName,
             file,
-            time: video.currentTime
+            time: currentTime
         }));
-    };
 
-    // Próximo episódio automaticamente
-    // video.onended = () => {
-    //     const episodes = seriesData[seriesName];
-    //     const currentIndex = episodes.indexOf(file);
-    //     const next = episodes[currentIndex + 1];
-    //     if (next) playVideo(seriesName, next);
-    // };
+        progressHistory[`${seriesName}/${file}`] = currentTime;
+        localStorage.setItem('progressHistory', JSON.stringify(progressHistory));
+    };
+    video.controls
 }
 
 async function loadDataSets() {
@@ -171,13 +199,14 @@ function atualizaBarra(valorAtual) {
 
 // Restaurar progresso
 window.addEventListener('DOMContentLoaded', async () => {
+    coletaProgressAtual()
     const dado = await loadDataSets()
 
     if (progress.time >= 0) atualizaBarra(progress.time)
     else atualizaBarra(0)
 
     if (dado && progress.seriesName && seriesData[progress.seriesName]) {
-        playVideo(progress.seriesName, progress.file);
+        carregandoVideo(progress.seriesName, progress.file);
         video.currentTime = progress.time || 0;
     }
 });
