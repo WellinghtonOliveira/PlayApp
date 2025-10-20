@@ -17,12 +17,7 @@ window.api.getSeries().then(series => {
     renderSeriesList();
 });
 
-function controladorSetaOverflow() {}
-// moveSetaRigth.addEventListener("click", function move() {})
-// const moveSetaLeft = document.querySelectorAll(".move-left")
-// const moveSetaRigth = document.querySelectorAll(".move-right")
-
-//controladores
+// controladores do video
 function contPlay() {
     video.play()
 }
@@ -70,8 +65,6 @@ function renderSeriesList() {
             divElement.appendChild(containerEP)
         })
     }
-
-    controladorSetaOverflow()
 }
 
 // Epsodios 
@@ -105,6 +98,9 @@ const individualSeries = () => {
 
     spanElement.className = 'container-span'
 
+    spanElement.appendChild(moveL())
+    spanElement.appendChild(moveR())
+
     return spanElement
 }
 
@@ -113,13 +109,10 @@ const series = () => {
 
     divElement.classList.add('container-video-item');
 
-    divElement.appendChild(moveL())
-    divElement.appendChild(moveR())
-
     return divElement
 }
 
-// setas
+// rendeniza as setas
 const moveR = () => {
     const moveRight = document.createElement('div');
 
@@ -197,10 +190,46 @@ function atualizaBarra(valorAtual) {
     barraProgresso.style.width = porcentagem + '%'
 }
 
+function carrosel(setas) {
+    setas.forEach((el) => {
+        const container = el.parentElement.querySelector(".container-video-item");
+
+        const larguraItem = 200;
+        const totalItens = container.children.length / 2;
+
+        let pos = 0;
+
+        el.addEventListener("click", (e) => {
+            const direcao = el.classList.contains("move-right") ? -1 : 1;
+
+            pos += direcao * larguraItem;
+            container.style.transition = "transform 0.3s ease";
+            container.style.transform = `translateX(${pos}px)`;
+
+            setTimeout(() => {
+                // reset para loop infinito
+                if (pos <= -larguraItem * totalItens) {
+                    container.style.transition = "none";
+                    pos = 0;
+                    container.style.transform = `translateX(${pos}px)`;
+                }
+                if (pos > 0) {
+                    container.style.transition = "none";
+                    pos = -larguraItem * (totalItens - 1);
+                    container.style.transform = `translateX(${pos}px)`;
+                }
+            }, 10);
+        });
+    });
+}
+
 // Restaurar progresso
 window.addEventListener('DOMContentLoaded', async () => {
     coletaProgressAtual()
-    const dado = await loadDataSets()
+    const dado = await loadDataSets();
+    const setas = document.querySelectorAll(".move-right, .move-left"); // pega todas de uma vez
+
+    carrosel(setas)
 
     if (progress.time >= 0) atualizaBarra(progress.time)
     else atualizaBarra(0)

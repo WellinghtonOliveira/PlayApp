@@ -36,11 +36,14 @@ main {
 }
 
 .container-span {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
     height: auto;
     padding: 10px;
+    justify-content: center;
+    overflow: hidden;
 }
 
 .titulo-element {
@@ -55,11 +58,9 @@ main {
 .container-video-item {
     width: auto;
     height: 100%;
-    position: relative;
     display: flex;
-    align-items: center;
     flex-direction: row;
-    overflow-x: hidden;
+    transition: .3s ease all;
 }
 
 .move-right,
@@ -77,6 +78,7 @@ main {
     font-size: 32px;
     font-weight: bold;
     z-index: 10;
+    user-select: none;
     transition: .2s ease-in-out all;
 }
 
@@ -90,11 +92,11 @@ main {
 }
 
 .move-right {
-    right: 0px;
+    right: 0;
 }
 
 .move-left {
-    left: 3px;
+    left: 0;
 }
 
 .video-item {
