@@ -41,7 +41,6 @@ main {
     width: 100%;
     height: auto;
     padding: 10px;
-    padding-right: 0;
 }
 
 .titulo-element {
@@ -77,6 +76,17 @@ main {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 32px;
     font-weight: bold;
+    z-index: 10;
+    transition: .2s ease-in-out all;
+}
+
+.move-left:hover,
+.move-right:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: rgba(0, 0, 0, 0.8);
+    width: 50px;
+    height: 150px;
 }
 
 .move-right {
