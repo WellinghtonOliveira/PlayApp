@@ -156,6 +156,37 @@ main {
     background-color: rgba(25, 25, 25, 1);
 }
 
+#tela-inteira {
+    position: absolute;
+    align-content: center;
+    width: 350px;
+    height: 200px;
+    padding: 10px;
+    bottom: 5px;
+    left: 5px;
+    border-radius: 5px;
+    z-index: 1;
+}
+
+.icon-tela-inteira {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+    text-align: center;
+    align-content: center;
+    font-weight: 800;
+    font-size: 30px;
+    color: black;
+    text-shadow: 0 0 5px white;
+    transition: .2s ease all;
+}
+
+.icon-tela-inteira:hover {
+    cursor: pointer;
+    text-shadow: 0 0 2px white;
+    transform: scale(1.2);
+}
+
 .controles {
     position: absolute;
     display: flex;
