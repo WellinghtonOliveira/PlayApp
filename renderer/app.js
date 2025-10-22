@@ -2,7 +2,7 @@ document.getElementById("play").addEventListener("click", contPlay)
 document.getElementById("voltar").addEventListener("click", contVoltar)
 document.getElementById("pause").addEventListener("click", contPause)
 document.getElementById("avancar").addEventListener("click", contAvancar)
-
+  
 const barraProgresso = document.getElementById("barra-progresso")
 const video = document.querySelector('#video-anteriormente');
 const list = document.querySelector('#video-list');
