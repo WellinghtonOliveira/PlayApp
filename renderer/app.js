@@ -2,7 +2,7 @@ document.getElementById("play").addEventListener("click", contPlay)
 document.getElementById("voltar").addEventListener("click", contVoltar)
 document.getElementById("pause").addEventListener("click", contPause)
 document.getElementById("avancar").addEventListener("click", contAvancar)
-  
+
 const barraProgresso = document.getElementById("barra-progresso")
 const video = document.querySelector('#video-anteriormente');
 const list = document.querySelector('#video-list');
@@ -31,7 +31,7 @@ function contVoltar() {
     const currentIndex = episodes.indexOf(progress.file);
     const retrocesso = episodes[currentIndex - 1];
     if (retrocesso) carregandoVideo(progress.seriesName, retrocesso);
-    video.play()
+    video.pause()
 }
 
 function contAvancar() {
@@ -39,7 +39,7 @@ function contAvancar() {
     const currentIndex = episodes.indexOf(progress.file);
     const proximo = episodes[currentIndex + 1];
     if (proximo) carregandoVideo(progress.seriesName, proximo);
-    video.play()
+    video.pause()
 }
 
 function renderSeriesList() {
@@ -246,8 +246,10 @@ function controlesEstilo() {
     const controles = document.querySelectorAll(".controle")
 
     controles.forEach((el) => {
-        el.addEventListener("click", function() {
-            el.classList.toggle("cont-lig-des")
+
+        el.addEventListener("click", function () {
+            controles.forEach((a) => a.classList.remove("cont-lig-des"))
+            el.classList.add("cont-lig-des")
         })
     })
 }
