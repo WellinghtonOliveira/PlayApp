@@ -169,6 +169,8 @@ function carregandoVideo(seriesName, file) {
         localStorage.setItem('progressHistory', JSON.stringify(progressHistory));
     };
     video.controls
+
+    iconTelaCheia()
 }
 
 async function loadDataSets() {
@@ -225,7 +227,15 @@ function carrosel(setas) {
     });
 }
 
-// Restaurar progresso
+const iconTelaCheia = () => {
+    const icon = document.querySelector(".icon-tela-inteira")
+
+    icon.addEventListener("click", () => {
+        video.requestFullscreen()
+    })
+}
+
+// Inicialização
 window.addEventListener('DOMContentLoaded', async () => {
     coletaProgressAtual()
     const dado = await loadDataSets();
