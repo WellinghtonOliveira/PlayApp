@@ -231,6 +231,15 @@ main {
     text-shadow: 0 0 5px rgba(245, 245, 245, 0.4);
 }
 
+#voltar:hover,
+#avancar:hover,
+#play:hover,
+#pause:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+    text-shadow: 0 0 2px rgba(245, 245, 245, 0.5);
+}
+
 #play {
     margin-right: 3px;
 }
