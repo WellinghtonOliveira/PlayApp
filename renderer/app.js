@@ -27,6 +27,7 @@ function contPause() {
 }
 
 function contVoltar() {
+    controlesEstilo()
     const episodes = seriesData[progress.seriesName];
     const currentIndex = episodes.indexOf(progress.file);
     const retrocesso = episodes[currentIndex - 1];
@@ -35,6 +36,7 @@ function contVoltar() {
 }
 
 function contAvancar() {
+    controlesEstilo()
     const episodes = seriesData[progress.seriesName];
     const currentIndex = episodes.indexOf(progress.file);
     const proximo = episodes[currentIndex + 1];
@@ -246,10 +248,14 @@ function controlesEstilo() {
     const controles = document.querySelectorAll(".controle")
 
     controles.forEach((el) => {
-
         el.addEventListener("click", function () {
             controles.forEach((a) => a.classList.remove("cont-lig-des"))
             el.classList.add("cont-lig-des")
+            return
         })
+
+        controles.forEach((a) => a.classList.remove("cont-lig-des"))
+        const p = document.querySelector("#pause")
+        p.classList.add("cont-lig-des")
     })
 }

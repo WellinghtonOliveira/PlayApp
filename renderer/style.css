@@ -163,6 +163,7 @@ main {
     width: 350px;
     height: 200px;
     padding: 10px;
+    user-select: none;
     bottom: 5px;
     left: 5px;
     border-radius: 5px;
@@ -180,6 +181,7 @@ main {
     height: 40px;
     margin: 0 auto;
     text-align: center;
+    user-select: none;
     align-content: center;
     font-weight: 800;
     font-size: 30px;
