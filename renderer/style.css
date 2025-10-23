@@ -157,6 +157,7 @@ main {
 }
 
 #tela-inteira {
+    opacity: .3;
     position: absolute;
     align-content: center;
     width: 350px;
@@ -166,6 +167,12 @@ main {
     left: 5px;
     border-radius: 5px;
     z-index: 1;
+    transition: .2s ease-in-out all;
+}
+
+#tela-inteira:hover {
+    opacity: 1;
+    background-color: rgba(3, 3, 27, 0.3);
 }
 
 .icon-tela-inteira {
@@ -183,8 +190,8 @@ main {
 
 .icon-tela-inteira:hover {
     cursor: pointer;
-    text-shadow: 0 0 2px white;
-    transform: scale(1.2);
+    color: white;
+    transform: scale(1.3);
 }
 
 .controles {
@@ -217,6 +224,7 @@ main {
     letter-spacing: -8px;
     font-size: 22px;
     text-shadow: 0 0 5px rgba(245, 245, 245, 0.4);
+    transition: .1s ease-in-out all;
 }
 
 #play,
@@ -229,14 +237,23 @@ main {
     height: auto;
     font-size: 22px;
     text-shadow: 0 0 5px rgba(245, 245, 245, 0.4);
+    transition: .1s ease-in-out all;
 }
 
 #voltar:hover,
 #avancar:hover,
 #play:hover,
 #pause:hover {
+    color: rgb(121, 0, 0);
     cursor: pointer;
-    transform: scale(1.2);
+    transform: scale(1.3);
+    text-shadow: 0 0 2px rgba(245, 245, 245, 0.5);
+    transition: .2s ease-in-out all;
+}
+
+.cont-lig-des {
+    transform: scale(1.3);
+    color: rgb(121, 0, 0);
     text-shadow: 0 0 2px rgba(245, 245, 245, 0.5);
 }
 

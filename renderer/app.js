@@ -230,6 +230,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     const setas = document.querySelectorAll(".move-right, .move-left"); // pega todas de uma vez
 
     carrosel(setas)
+    controlesEstilo()
 
     if (progress.time >= 0) atualizaBarra(progress.time)
     else atualizaBarra(0)
@@ -239,3 +240,14 @@ window.addEventListener('DOMContentLoaded', async () => {
         video.currentTime = progress.time || 0;
     }
 });
+
+// Estilo com js
+function controlesEstilo() {
+    const controles = document.querySelectorAll(".controle")
+
+    controles.forEach((el) => {
+        el.addEventListener("click", function() {
+            el.classList.toggle("cont-lig-des")
+        })
+    })
+}
