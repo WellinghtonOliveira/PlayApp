@@ -230,21 +230,24 @@ main {
 
 #container-text-serie-atual {
     position: absolute;
-    top: 0;
-    right: 0;
-    margin: 10px;    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     white-space: nowrap;
     color: var(--color5);
     overflow: hidden;
     letter-spacing: 1px;
     text-overflow: ellipsis;
     font-family: helvetica;
-    font-weight: bold;
+    font-weight: 400;
     font-size: 14px;
+    background-color: rgba(0,0,40,0.2);
+    padding: 5px;
+    border-radius: 3px;
 }
 
-.titulo-atual {
-
+#container-text-serie-atual > p {
+    margin: 0 10px;
 }
 
 .controles {

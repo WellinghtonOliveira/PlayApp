@@ -141,6 +141,12 @@ function carregandoVideo(seriesName, file) {
     const progressHistory = JSON.parse(localStorage.getItem('progressHistory') || '{}');
     const savedTime = progressHistory[`${seriesName}/${file}`] || 0;
 
+    const tituloVideoAtual = document.querySelector("#titulo-atual")
+    const tituloSerieAtual = document.querySelector("#titulo-serie")
+
+    tituloVideoAtual.innerText = file
+    tituloSerieAtual. innerText = seriesName
+
     progress = { seriesName, file, time: savedTime };
     localStorage.setItem('progress', JSON.stringify(progress));
 
