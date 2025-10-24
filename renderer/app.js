@@ -245,7 +245,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     carrosel(setas)
     controlesEstilo()
-    posControls()
 
     if (progress.time >= 0) atualizaBarra(progress.time)
     else atualizaBarra(0)
@@ -270,20 +269,5 @@ function controlesEstilo() {
         controles.forEach((a) => a.classList.remove("cont-lig-des"))
         const p = document.querySelector("#pause")
         p.classList.add("cont-lig-des")
-    })
-}
-
-// posição controles
-const posControls = () => {
-    const navPlayer = document.getElementById("player")
-    const navControl = document.getElementsByClassName("container-controle")
-
-    window.addEventListener("resize", () => {
-
-        if (navPlayer.clientWidth > 715) {
-            navControl.style.marginRight = "30px" // TODO corrigir proporções
-        }
-        console.log(navPlayer.clientWidth)
-
     })
 }

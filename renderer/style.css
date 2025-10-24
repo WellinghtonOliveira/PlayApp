@@ -238,6 +238,7 @@ main {
     min-width: 300px;
     height: auto;
     z-index: 30;
+    transition: .2s ease-in-out all;
 }
 
 .container-controle {
