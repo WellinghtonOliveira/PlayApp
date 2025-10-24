@@ -1,3 +1,4 @@
 @media (max-width: 370px) {.controles {background-color: rgba(30,30,30,0.7); padding: 3px 10px; border-radius: 3px;}}
-@media (min-width: 715px) {.controles {right: 50px;}}
+@media (min-width: 615px) {.controles {right: 10px;} #container-text-serie-atual {width: 300px;}}
 @media (min-width: 900px) {.controles {right: auto; left: 500px;}}
+@media  (max-width: 680px) {#container-text-serie-atual {display: none;}}
