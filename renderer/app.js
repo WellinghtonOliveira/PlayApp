@@ -178,7 +178,6 @@ function carregandoVideo(seriesName, file) {
 
     controlesEstilo()
     iconTelaCheia()
-    verificPause()
 }
 
 // const video = document.getElementById('meuVideo');
@@ -195,9 +194,7 @@ function carregandoVideo(seriesName, file) {
 const verificPause = () => {
     document.addEventListener("fullscreenchange", () => {
         if (document.fullscreenElement !== video) {
-            if (video.paused) {
-                controlesEstilo()
-            } else {
+            if (!video.paused) {
                 controlesEstilo()
                 video.pause()
             }
@@ -274,8 +271,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     const dado = await loadDataSets();
     const setas = document.querySelectorAll(".move-right, .move-left"); // pega todas de uma vez
 
+    // Inicializando funções
     carrosel(setas)
     controlesEstilo()
+    verificPause()
 
     if (progress.time >= 0) atualizaBarra(progress.time)
     else atualizaBarra(0)
