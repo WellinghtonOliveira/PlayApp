@@ -4,9 +4,11 @@ document.getElementById("pause").addEventListener("click", contPause)
 document.getElementById("avancar").addEventListener("click", contAvancar)
 
 const barraProgresso = document.getElementById("barra-progresso")
+const botao = document.querySelector(".obj-proximo-elemento")
 const video = document.querySelector('#video-anteriormente');
 const list = document.querySelector('#video-list');
 
+const segundosForaProximoEp = 90
 
 let progress
 let tamanhoVideoAtual = 0
@@ -177,7 +179,7 @@ function carregandoVideo(seriesName, file) {
     };
 
     video.controls
-    
+
     controlesEstilo()
     iconTelaCheia()
 
@@ -188,13 +190,36 @@ function carregandoVideo(seriesName, file) {
     video.hasSkipped = false;
 }
 
+
+function btnProximoEp() {
+    const tempoRestante = video.duration - video.currentTime;
+    
+    let tempoFora = segundosForaProximoEp + 20
+
+    if (tempoRestante <= tempoFora && !video.caixaMostrada) {
+        botao.style.display = 'block';
+        video.caixaMostrada = true; 
+    }
+
+    if (tempoRestante > tempoFora && video.caixaMostrada) {
+        botao.style.display = 'none';
+        video.caixaMostrada = false;
+    }
+}
+
+botao.addEventListener('click', () => {
+    // aqui você coloca sua lógica para pular pro próximo episódio
+    console.log('Pulando pro próximo episódio...');
+});
+
 function pulaEpsodiosAuto() {
     video.addEventListener('timeupdate', () => {
         const tempoRestante = video.duration - video.currentTime;
-        const segundosFora = 90
+        const segundosFora = segundosForaProximoEp
 
+        btnProximoEp()
         if (video.duration <= segundosFora) return
-        if (tempoRestante <= segundosFora) {
+        if (tempoRestante <= segundosFora && document.fullscreenElement === video) {
             const episodes = seriesData[progress.seriesName];
             const currentIndex = episodes.indexOf(progress.file);
             const next = episodes[currentIndex + 1];

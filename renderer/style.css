@@ -171,6 +171,34 @@ main {
     z-index: 10;
 }
 
+.obj-proximo-elemento {
+    display: none;
+    position: absolute;
+    width: 80px;
+    height: 40px;
+    padding: 5px 10px;
+    border-radius: 3px 0 0 3px;
+    text-align: end;
+    align-content: center;
+    font-size: 26px;
+    font-weight: bold;
+    color: white;
+    right: 0;
+    background-color: rgba(0, 10, 30, 0.3);
+    border: 1px solid var(--color-preto-azulado);
+    border-right: none;
+    transition: .2s ease-in-out all;
+    z-index: 999999;
+}
+
+.obj-proximo-elemento:hover {
+    cursor: pointer;
+    border: none;
+    background-color: rgba(0, 10, 30, 0.5);
+    box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
 .video-player {
     position: absolute;
     width: 350px;
