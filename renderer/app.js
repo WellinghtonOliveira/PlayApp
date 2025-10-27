@@ -178,9 +178,28 @@ function carregandoVideo(seriesName, file) {
 
     controlesEstilo()
     iconTelaCheia()
+    verificPause()
 }
 
+// const video = document.getElementById('meuVideo');
+
+// document.addEventListener('fullscreenchange', () => {
+//   if (document.fullscreenElement === video) {
+//     console.log('🎬 O vídeo entrou em tela cheia');
+//   } else {
+//     console.log('↩️ O vídeo saiu da tela cheia');
+//   }
+// });
+
+
 const verificPause = () => {
+    document.addEventListener("fullscreenchange", () => {
+        if (document.fullscreenElement === video) {
+            console.log("tela cheia")
+        }else {
+            controlesEstilo()
+        }
+    })
     if (video.paused) {
         controlesEstilo()
     }
