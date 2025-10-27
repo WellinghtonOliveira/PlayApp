@@ -194,19 +194,15 @@ function carregandoVideo(seriesName, file) {
 
 const verificPause = () => {
     document.addEventListener("fullscreenchange", () => {
-        if (document.fullscreenElement === video) {
-            console.log("tela cheia")
-        }else {
-            controlesEstilo()
+        if (document.fullscreenElement !== video) {
+            if (video.paused) {
+                controlesEstilo()
+            } else {
+                controlesEstilo()
+                video.pause()
+            }
         }
     })
-    if (video.paused) {
-        controlesEstilo()
-    }
-    if (!video.paused) {
-        video.play()
-    }
-    return
 }
 
 async function loadDataSets() {
