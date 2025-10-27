@@ -138,6 +138,7 @@ const coletaProgressAtual = () => {
 }
 
 function carregandoVideo(seriesName, file) {
+
     const progressHistory = JSON.parse(localStorage.getItem('progressHistory') || '{}');
     const savedTime = progressHistory[`${seriesName}/${file}`] || 0;
 
@@ -174,21 +175,37 @@ function carregandoVideo(seriesName, file) {
         progressHistory[`${seriesName}/${file}`] = currentTime;
         localStorage.setItem('progressHistory', JSON.stringify(progressHistory));
     };
-    video.controls
 
+    video.controls
+    
     controlesEstilo()
     iconTelaCheia()
+
+    if (video.hasSkipped) {
+        video.play()
+        controlesEstilo()
+    }
+    video.hasSkipped = false;
 }
 
-// const video = document.getElementById('meuVideo');
+function pulaEpsodiosAuto() {
+    video.addEventListener('timeupdate', () => {
+        const tempoRestante = video.duration - video.currentTime;
+        const segundosFora = 90
 
-// document.addEventListener('fullscreenchange', () => {
-//   if (document.fullscreenElement === video) {
-//     console.log('🎬 O vídeo entrou em tela cheia');
-//   } else {
-//     console.log('↩️ O vídeo saiu da tela cheia');
-//   }
-// });
+        if (video.duration <= segundosFora) return
+        if (tempoRestante <= segundosFora) {
+            const episodes = seriesData[progress.seriesName];
+            const currentIndex = episodes.indexOf(progress.file);
+            const next = episodes[currentIndex + 1];
+
+            if (next && !video.hasSkipped) {
+                video.hasSkipped = true;
+                carregandoVideo(progress.seriesName, next);
+            }
+        }
+    });
+}
 
 
 const verificPause = () => {
@@ -275,6 +292,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     carrosel(setas)
     controlesEstilo()
     verificPause()
+    pulaEpsodiosAuto()
 
     if (progress.time >= 0) atualizaBarra(progress.time)
     else atualizaBarra(0)
