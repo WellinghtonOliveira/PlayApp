@@ -145,7 +145,7 @@ function carregandoVideo(seriesName, file) {
     const tituloSerieAtual = document.querySelector("#titulo-serie")
 
     tituloVideoAtual.innerText = file
-    tituloSerieAtual. innerText = seriesName
+    tituloSerieAtual.innerText = seriesName
 
     progress = { seriesName, file, time: savedTime };
     localStorage.setItem('progress', JSON.stringify(progress));
@@ -178,6 +178,16 @@ function carregandoVideo(seriesName, file) {
 
     controlesEstilo()
     iconTelaCheia()
+}
+
+const verificPause = () => {
+    if (video.paused) {
+        controlesEstilo()
+    }
+    if (!video.paused) {
+        video.play()
+    }
+    return
 }
 
 async function loadDataSets() {
