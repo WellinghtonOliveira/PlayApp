@@ -190,7 +190,6 @@ function carregandoVideo(seriesName, file) {
     video.hasSkipped = false;
 }
 
-
 function btnProximoEp() {
     const tempoRestante = video.duration - video.currentTime;
     
