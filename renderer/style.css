@@ -188,7 +188,7 @@ main {
     border: 1px solid var(--color-preto-azulado);
     border-right: none;
     transition: .2s ease-in-out all;
-    z-index: 999999;
+    z-index: 99999;
 }
 
 .obj-proximo-elemento:hover {
