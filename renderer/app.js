@@ -8,7 +8,7 @@ const botao = document.querySelector(".obj-proximo-elemento")
 const video = document.querySelector('#video-anteriormente');
 const list = document.querySelector('#video-list');
 
-const segundosForaProximoEp = 90
+const segundosForaProximoEp = 25
 
 let progress
 let tamanhoVideoAtual = 0
