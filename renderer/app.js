@@ -343,3 +343,5 @@ function controlesEstilo() {
         p.classList.add("cont-lig-des")
     })
 }
+
+// TODO quando colocado para assistir melhorar o design do video pois ele fica todo bugado quando tenta usar o teclado para abaixar o volume por exemplo
