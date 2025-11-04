@@ -210,6 +210,10 @@ main {
     background-color: var(--color-preto-azulado);
 }
 
+.video-player:focus {
+    outline: none;
+}
+
 #tela-inteira {
     opacity: .3;
     position: absolute;

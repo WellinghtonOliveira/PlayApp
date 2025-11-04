@@ -77,7 +77,6 @@ const epsodios = (file, seriesName) => {
     const nameElement = document.createElement('p')
     const tambElement = document.createElement('video')
 
-    //tambElement.controls = true
     nameElement.textContent = file
     nameElement.className = 'title-EP'
     tambElement.className = 'video-tamb-EP'
@@ -178,7 +177,7 @@ function carregandoVideo(seriesName, file) {
         localStorage.setItem('progressHistory', JSON.stringify(progressHistory));
     };
 
-    video.controls
+    //video.controls
 
     controlesEstilo()
     iconTelaCheia()
@@ -192,12 +191,12 @@ function carregandoVideo(seriesName, file) {
 
 function btnProximoEp() {
     const tempoRestante = video.duration - video.currentTime;
-    
+
     let tempoFora = segundosForaProximoEp + 20
 
     if (tempoRestante <= tempoFora && !video.caixaMostrada) {
         botao.style.display = 'block';
-        video.caixaMostrada = true; 
+        video.caixaMostrada = true;
     }
 
     if (tempoRestante > tempoFora && video.caixaMostrada) {
@@ -317,6 +316,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     controlesEstilo()
     verificPause()
     pulaEpsodiosAuto()
+    verificBlur()
 
     if (progress.time >= 0) atualizaBarra(progress.time)
     else atualizaBarra(0)
@@ -344,5 +344,36 @@ function controlesEstilo() {
     })
 }
 
+const verificBlur = () => {
+
+    let clickTimeout;
+    video.addEventListener('click', () => {
+        // Evita conflito com duplo clique
+        clearTimeout(clickTimeout);
+        clickTimeout = setTimeout(() => {
+            video.paused ? video.play() : video.pause();
+        }, 200);
+    });
+    
+    document.addEventListener('keydown', (e) => {
+        if (!document.fullscreenElement) return; // só controla se estiver em tela cheia
+
+        switch (e.key) {
+            case ' ':
+                e.preventDefault(); // evita scroll
+                video.paused ? video.play() : video.pause();
+                break;
+            case 'ArrowRight':
+                video.currentTime += 10;
+                break;
+            case 'ArrowLeft':
+                video.currentTime -= 10;
+                break;
+            case 'click':
+                console.log(2)
+                break
+        }
+    })
+}
 // TODO quando colocado para assistir melhorar o design do video pois ele fica todo bugado quando tenta usar o teclado para abaixar o volume por exemplo
 // TODO tambem fica com uma borda amarela quando clicado
