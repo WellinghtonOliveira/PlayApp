@@ -345,35 +345,59 @@ function controlesEstilo() {
 }
 
 const verificBlur = () => {
-
     let clickTimeout;
+
     video.addEventListener('click', () => {
-        // Evita conflito com duplo clique
         clearTimeout(clickTimeout);
         clickTimeout = setTimeout(() => {
-            video.paused ? video.play() : video.pause();
-        }, 200);
+            video.paused != true ? video.play() : video.pause()
+        }, 100);
     });
-    
-    document.addEventListener('keydown', (e) => {
-        if (!document.fullscreenElement) return; // só controla se estiver em tela cheia
 
-        switch (e.key) {
-            case ' ':
-                e.preventDefault(); // evita scroll
+    const onKeyDown = (e) => {
+        if (!document.fullscreenElement) return
+        e.preventDefault()
+
+        const code = e.code
+        const keyLower = (e.key || '').toLowerCase();
+
+        switch (code) {
+            case 'Space':
                 video.paused ? video.play() : video.pause();
                 break;
             case 'ArrowRight':
-                video.currentTime += 10;
+                video.currentTime = Math.min(video.duration || Infinity, video.currentTime + 10);
                 break;
             case 'ArrowLeft':
-                video.currentTime -= 10;
+                video.currentTime = Math.max(0, video.currentTime - 10);
                 break;
-            case 'click':
-                console.log(2)
-                break
+            case 'KeyF': // tecla "f"
+                if (!document.fullscreenElement) video.requestFullscreen();
+                else document.exitFullscreen();
+                break;
+            case 'KeyM': // tecla "m"
+                video.muted ? video.muted = false : video.muted = true
+                break;
         }
-    })
-}
+
+        // fallback: caso algum navegador entregue 'key' em vez de 'code'
+        if (keyLower === 'f') {
+            if (!document.fullscreenElement) video.requestFullscreen();
+            else document.exitFullscreen();
+        } else if (keyLower === 'm') {
+            video.muted ? video.muted = false : video.muted = true
+        }
+
+        
+    };
+
+    document.addEventListener('keydown', onKeyDown, true);
+
+    video.setAttribute('tabindex', '-1');
+    video.style.outline = 'none';
+};
+
+
+
 // TODO quando colocado para assistir melhorar o design do video pois ele fica todo bugado quando tenta usar o teclado para abaixar o volume por exemplo
 // TODO tambem fica com uma borda amarela quando clicado
