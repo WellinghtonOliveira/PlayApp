@@ -354,13 +354,14 @@ const verificBlur = () => {
         }, 100);
     });
 
+    
     const onKeyDown = (e) => {
         if (!document.fullscreenElement) return
         e.preventDefault()
 
         const code = e.code
         const keyLower = (e.key || '').toLowerCase();
-
+ 
         switch (code) {
             case 'Space':
                 video.paused ? video.play() : video.pause();
