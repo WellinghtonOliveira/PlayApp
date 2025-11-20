@@ -397,8 +397,3 @@ const verificBlur = () => {
     video.setAttribute('tabindex', '-1');
     video.style.outline = 'none';
 };
-
-
-
-// TODO quando colocado para assistir melhorar o design do video pois ele fica todo bugado quando tenta usar o teclado para abaixar o volume por exemplo
-// TODO tambem fica com uma borda amarela quando clicado
