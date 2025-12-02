@@ -239,7 +239,7 @@ const verificPause = () => {
                 video.pause()
             }
         }
-    })
+    }) 
 }
 
 async function loadDataSets() {
