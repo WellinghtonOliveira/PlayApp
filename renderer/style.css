@@ -308,7 +308,7 @@ main {
 }
 
 #voltar,
-#avancar {
+#avancar { 
     min-width: 30px;
     text-align: left;
     align-content: center;
