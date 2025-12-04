@@ -236,7 +236,7 @@ const verificPause = () => {
         if (document.fullscreenElement !== video) {
             if (!video.paused) {
                 controlesEstilo()
-                video.pause()
+                video.pause() 
             }
         }
     }) 
