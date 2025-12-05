@@ -238,10 +238,10 @@ const verificPause = () => {
                 controlesEstilo()
                 video.pause() 
             }
-        }
+        } 
     }) 
 } 
-
+ 
 async function loadDataSets() {
     return new Promise((resolve) => {
         const check = setInterval(() => {
