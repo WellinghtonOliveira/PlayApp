@@ -394,8 +394,8 @@ const verificBlur = () => {
 
     document.addEventListener('keydown', onKeyDown, true);
 
-    video.setAttribute('tabindex', '-1'); 
+    video.setAttribute('tabindex', '-1');
     video.style.outline = 'none';
-};  
- 
+};
+
 // TODO lembrar de colocar outras estenções por exemplo mkv
