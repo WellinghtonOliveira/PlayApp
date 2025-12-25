@@ -389,7 +389,7 @@ const verificBlur = () => {
             video.muted ? video.muted = false : video.muted = true
         }
 
-        
+         
     };
 
     document.addEventListener('keydown', onKeyDown, true);
