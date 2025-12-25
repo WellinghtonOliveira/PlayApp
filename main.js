@@ -38,4 +38,4 @@ ipcMain.handle('get-series', async () => {
   }
 
   return result;
-});
+}); 
