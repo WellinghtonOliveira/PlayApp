@@ -20,7 +20,7 @@ function createWindow() {
 }
 
 app.whenReady().then(createWindow);
-
+ 
 ipcMain.handle('get-series', async () => {
   const baseDir = path.join(__dirname, 'renderer/videos');
   const seriesFolders = fs.readdirSync(baseDir, { withFileTypes: true })
