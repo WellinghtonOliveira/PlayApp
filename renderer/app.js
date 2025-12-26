@@ -388,7 +388,7 @@ const verificBlur = () => {
         } else if (keyLower === 'm') {
             video.muted ? video.muted = false : video.muted = true
         }
-
+ 
          
     };
 
