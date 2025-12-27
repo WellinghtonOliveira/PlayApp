@@ -215,7 +215,7 @@ main {
 }
 
 #tela-inteira {
-    opacity: .3;
+    opacity: .3; 
     position: absolute;
     align-content: center;
     width: 350px;
