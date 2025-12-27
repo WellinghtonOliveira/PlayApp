@@ -1,7 +1,7 @@
 @media (max-width: 370px) {.controles {background-color: rgba(30,30,30,0.7); left: 20px; padding: 3px 10px; border-radius: 3px; }}
 @media (min-width: 615px) {.controles {right: 10px;} #container-text-serie-atual {width: 300px; right: 10px; top: 10px;}}
 @media (min-width: 900px) {.controles {right: auto; left: 500px;}}
-@media  (max-width: 680px) {#container-text-serie-atual {display: none;}} 
+@media  (max-width: 680px) {#container-text-serie-atual {display: none;}}
 @media  (max-width: 1155px) {#titulo-serie {display: none ;}}
 @media  (min-width: 1150px) {#container-text-serie-atual {top: auto; bottom: 10px; right: 10px;}}
 @media  (min-width: 1250px) {#container-text-serie-atual {top: auto; width: 400px; text-align: end; bottom: 10px; right: 10px;}}
