@@ -19,7 +19,7 @@ function createWindow() {
   win.loadFile('renderer/index.html');
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(createWindow); 
  
 ipcMain.handle('get-series', async () => {
   const baseDir = path.join(__dirname, 'renderer/videos');
