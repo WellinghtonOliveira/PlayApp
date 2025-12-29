@@ -218,7 +218,7 @@ main {
     opacity: .3; 
     position: absolute;
     align-content: center;
-    width: 350px;
+    width: 350px; 
     height: 200px;
     padding: 10px;
     user-select: none;
