@@ -18,7 +18,7 @@ function createWindow() {
   });
   win.loadFile('renderer/index.html');
 }
-
+ 
 app.whenReady().then(createWindow)
  
 ipcMain.handle('get-series', async () => {
