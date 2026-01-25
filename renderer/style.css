@@ -203,7 +203,7 @@ main {
     position: absolute;
     width: 350px; 
     height: 200px;
-    padding: 1px 5px 5px 1px;
+    padding: 1px 5px 5px 1px; 
     bottom: 5px;
     left: 5px;
     border-radius: 5px;
