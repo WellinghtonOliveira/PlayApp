@@ -30,10 +30,7 @@ ipcMain.handle('get-series', async () => {
   const result = {};
   for (const folder of seriesFolders) {
     const seriesPath = path.join(baseDir, folder);
-    const episodes = fs.readdirSync(seriesPath)
-      .filter(f => f.endsWith('.mp4'))
-      .filter(f => f.endsWith('.mkv'))
-      .sort();
+    const episodes = fs.readdirSync(seriesPath).filter(f => f.endsWith('.mp4')).sort() || fs.readdirSync(seriesPath).filter(f => f.endsWith('.mkv')).sort();
     result[folder] = episodes;
   }
 
