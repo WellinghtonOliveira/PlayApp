@@ -8,7 +8,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* CSS INTEGRADO */
+    *:focus {
+      outline: none !important;
+    }
+
+    video:focus-visible {
+      outline: none;
+    }
+
     :root {
       --bg-color: #0f1114;
       --card-bg: #1a1d23;
@@ -26,7 +33,6 @@
       overflow-x: hidden;
     }
 
-    /* Header */
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -45,7 +51,6 @@
       color: var(--primary);
     }
 
-    /* Video Principal */
     .main-video-section {
       width: 100%;
       background: #000;
@@ -57,11 +62,14 @@
     #video-anteriormente {
       max-width: 1000px;
       width: 100%;
+      filter: contrast(1.03) saturate(1.05) brightness(1.02);
+
+      image-rendering: high-quality;
+      backface-visibility: hidden;
       aspect-ratio: 16/9;
       box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
     }
 
-    /* Botão Próximo Episódio (Seu script controla o display) */
     .obj-proximo-elemento {
       position: absolute;
       bottom: 30px;
@@ -78,13 +86,8 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
 
-    /* Listagem de Séries Gerada pelo JS */
     .container {
       padding: 20px 40px;
-    }
-
-    #video-list {
-      margin-top: 30px;
     }
 
     .container-span {
@@ -97,14 +100,18 @@
       font-size: 1.2rem;
       font-weight: 600;
       margin-bottom: 15px;
-      color: var(--text-main);
     }
 
     .container-video-item {
       display: flex;
       gap: 15px;
-      transition: transform 0.3s ease;
-      overflow-x: visible;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+    }
+
+    .container-video-item::-webkit-scrollbar {
+      display: none;
     }
 
     .video-item {
@@ -119,26 +126,26 @@
     .video-item:hover {
       transform: scale(1.03);
       background: #25292e;
+      filter: brightness(1.1);
     }
 
     .video-tamb-EP {
       width: 100%;
       height: 125px;
       object-fit: cover;
-      border-radius: 8px 8px 0 0;
-      background: #000;
+      /* Evita que a thumbnail pareça pixelada ao esticar */
+      image-rendering: -webkit-optimize-contrast;
+      filter: brightness(0.8);
+      /* Deixa as capas mais discretas, destacando ao dar hover */
+      transition: filter 0.3s;
     }
 
     .title-EP {
       padding: 10px;
       font-size: 0.85rem;
       color: var(--text-dim);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    /* Setas Carrossel */
     .move-left,
     .move-right {
       position: absolute;
@@ -153,7 +160,7 @@
       justify-content: center;
       border-radius: 50%;
       cursor: pointer;
-      user-select: none;
+      transform: translateY(-50%);
     }
 
     .move-left {
@@ -164,7 +171,6 @@
       right: -20px;
     }
 
-    /* Player Bar */
     .player-bar {
       position: fixed;
       bottom: 0;
@@ -192,6 +198,7 @@
     #titulo-atual {
       font-size: 0.8rem;
       color: var(--text-dim);
+      margin: 0;
     }
 
     .player-controls {
@@ -212,14 +219,8 @@
       font-size: 1.3rem;
       color: var(--text-dim);
       cursor: pointer;
-      transition: 0.2s;
     }
 
-    .controle:hover {
-      color: white;
-    }
-
-    /* Classe que seu JS usa para ativar ícone */
     .cont-lig-des {
       color: var(--primary) !important;
     }
@@ -230,7 +231,6 @@
       height: 5px;
       background: #333;
       border-radius: 10px;
-      position: relative;
     }
 
     #barra-progresso {
@@ -238,19 +238,12 @@
       background: var(--primary);
       width: 0%;
       border-radius: 10px;
-      transition: width 0.1s linear;
     }
 
     .extra-controls {
       width: 25%;
       display: flex;
       justify-content: flex-end;
-    }
-
-    .icon-tela-inteira {
-      font-size: 1.2rem;
-      cursor: pointer;
-      color: var(--text-dim);
     }
   </style>
 </head>
@@ -259,351 +252,40 @@
 
   <header class="navbar">
     <div class="logo">Stream<span>Watch</span></div>
-    <div class="user"><span>User: Cass</span></div>
+    <div class="user"><span>User</span></div>
   </header>
 
   <section class="main-video-section">
-    <video id="video-anteriormente"></video>
-    <button class="obj-proximo-elemento">Pular p/ Próximo</button>
+    <video id="video-anteriormente" tabindex="-1"></video>
+    <button class="obj-proximo-elemento" id="btn-pular">Pular p/ Próximo</button>
   </section>
 
   <main class="container">
-    <div id="video-list">
-    </div>
+    <div id="video-list"></div>
   </main>
 
   <footer class="player-bar">
     <div class="now-playing">
       <strong id="titulo-serie">Selecione uma série</strong>
-      <p id="titulo-atual">Aguardando reprodução...</p>
+      <p id="titulo-atual">Aguardando...</p>
     </div>
-
     <div class="player-controls">
       <div class="buttons-group">
         <i class="fas fa-step-backward controle" id="voltar"></i>
-        <i class="fas fa-pause controle" id="pause"></i>
         <i class="fas fa-play controle" id="play"></i>
+        <i class="fas fa-pause controle" id="pause"></i>
         <i class="fas fa-step-forward controle" id="avancar"></i>
       </div>
       <div class="progress-wrapper">
         <div id="barra-progresso"></div>
       </div>
     </div>
-
     <div class="extra-controls">
-      <i class="fas fa-expand icon-tela-inteira"></i>
+      <i class="fas fa-expand icon-tela-inteira" id="fullscreen-btn"></i>
     </div>
   </footer>
 
-  <script>
-    /* INTEGRAÇÃO DO SEU SCRIPT */
-
-    // Mock para teste caso não esteja no Electron (se window.api não existir)
-    if (!window.api) {
-      window.api = {
-        getSeries: async () => ({
-          "Cyberpunk": ["Episodio_01.mp4", "Episodio_02.mp4", "Episodio_03.mp4"],
-          "Arcane": ["A_Queda.mp4", "Inimigo_Comum.mp4"],
-          "Breaking Bad": ["Pilot.mp4", "Cat_in_the_bag.mp4"]
-        })
-      };
-    }
-
-    // Seletores do seu script
-    document.getElementById("play").addEventListener("click", contPlay)
-    document.getElementById("voltar").addEventListener("click", contVoltar)
-    document.getElementById("pause").addEventListener("click", contPause)
-    document.getElementById("avancar").addEventListener("click", contAvancar)
-
-    const barraProgresso = document.getElementById("barra-progresso")
-    const botao = document.querySelector(".obj-proximo-elemento")
-    const video = document.querySelector('#video-anteriormente');
-    const list = document.querySelector('#video-list');
-
-    const segundosForaProximoEp = 25
-    let progress
-    let tamanhoVideoAtual = 0
-    let seriesData = {};
-
-    window.api.getSeries().then(series => {
-      seriesData = series;
-      renderSeriesList();
-    });
-
-    function contPlay() {
-      video.play()
-    }
-
-    function contPause() {
-      video.pause()
-    }
-
-    function contVoltar() {
-      controlesEstilo()
-      const episodes = seriesData[progress.seriesName];
-      const currentIndex = episodes.indexOf(progress.file);
-      const retrocesso = episodes[currentIndex - 1];
-      if (retrocesso) carregandoVideo(progress.seriesName, retrocesso);
-      video.pause()
-    }
-
-    function contAvancar() {
-      controlesEstilo()
-      const episodes = seriesData[progress.seriesName];
-      const currentIndex = episodes.indexOf(progress.file);
-      const proximo = episodes[currentIndex + 1];
-      if (proximo) carregandoVideo(progress.seriesName, proximo);
-      video.pause()
-    }
-
-    function renderSeriesList() {
-      list.innerHTML = '';
-      for (const seriesName in seriesData) {
-        const divElement = series()
-        const spanElement = individualSeries()
-        const paragrapyElement = nomeEpsodios(seriesName)
-
-        spanElement.appendChild(paragrapyElement)
-        spanElement.appendChild(divElement);
-        list.appendChild(spanElement)
-
-        seriesData[seriesName].forEach(file => {
-          const {
-            containerEP,
-            nameElement,
-            tambElement
-          } = epsodios(file, seriesName)
-          containerEP.onclick = () => carregandoVideo(seriesName, file)
-          containerEP.appendChild(tambElement)
-          containerEP.appendChild(nameElement)
-          divElement.appendChild(containerEP)
-        })
-      }
-      // Inicializa carrossel após renderizar
-      const setas = document.querySelectorAll(".move-right, .move-left");
-      carrosel(setas);
-    }
-
-    const epsodios = (file, seriesName) => {
-      const containerEP = document.createElement('div')
-      const nameElement = document.createElement('p')
-      const tambElement = document.createElement('video')
-
-      nameElement.textContent = file
-      nameElement.className = 'title-EP'
-      tambElement.className = 'video-tamb-EP'
-      tambElement.src = `videos/${seriesName}/${file}`
-      containerEP.classList.add('video-item')
-      return {
-        containerEP,
-        nameElement,
-        tambElement
-      }
-    }
-
-    const nomeEpsodios = (seriesName) => {
-      const paragrapyElement = document.createElement('p')
-      paragrapyElement.className = 'titulo-element'
-      paragrapyElement.textContent = seriesName;
-      return paragrapyElement
-    }
-
-    const individualSeries = () => {
-      const spanElement = document.createElement('span')
-      spanElement.className = 'container-span'
-      spanElement.appendChild(moveL())
-      spanElement.appendChild(moveR())
-      return spanElement
-    }
-
-    const series = () => {
-      const divElement = document.createElement('div');
-      divElement.classList.add('container-video-item');
-      return divElement
-    }
-
-    const moveR = () => {
-      const moveRight = document.createElement('div');
-      moveRight.className = 'move-right'
-      moveRight.innerHTML = '<i class="fas fa-chevron-right"></i>'
-      return moveRight
-    }
-
-    const moveL = () => {
-      const moveLeft = document.createElement('div');
-      moveLeft.className = 'move-left'
-      moveLeft.innerHTML = '<i class="fas fa-chevron-left"></i>'
-      return moveLeft
-    }
-
-    const coletaProgressAtual = () => {
-      progress = JSON.parse(localStorage.getItem('progress') || '{}')
-    }
-
-    function carregandoVideo(seriesName, file) {
-      const progressHistory = JSON.parse(localStorage.getItem('progressHistory') || '{}');
-      const savedTime = progressHistory[`${seriesName}/${file}`] || 0;
-
-      document.querySelector("#titulo-atual").innerText = file
-      document.querySelector("#titulo-serie").innerText = seriesName
-
-      progress = {
-        seriesName,
-        file,
-        time: savedTime
-      };
-      localStorage.setItem('progress', JSON.stringify(progress));
-      video.src = `videos/${seriesName}/${file}`;
-
-      const onLoadedMetadata = () => {
-        tamanhoVideoAtual = video.duration;
-        video.currentTime = savedTime;
-        atualizaBarra(savedTime);
-      };
-
-      video.removeEventListener('loadedmetadata', onLoadedMetadata);
-      video.addEventListener('loadedmetadata', onLoadedMetadata);
-
-      video.ontimeupdate = () => {
-        const currentTime = video.currentTime;
-        atualizaBarra(currentTime);
-        localStorage.setItem('progress', JSON.stringify({
-          seriesName,
-          file,
-          time: currentTime
-        }));
-        progressHistory[`${seriesName}/${file}`] = currentTime;
-        localStorage.setItem('progressHistory', JSON.stringify(progressHistory));
-      };
-
-      controlesEstilo()
-      iconTelaCheia()
-      if (video.hasSkipped) {
-        video.play();
-        controlesEstilo();
-      }
-      video.hasSkipped = false;
-    }
-
-    function btnProximoEp() {
-      const tempoRestante = video.duration - video.currentTime;
-      let tempoFora = segundosForaProximoEp + 20
-      if (tempoRestante <= tempoFora && !video.caixaMostrada) {
-        botao.style.display = 'block';
-        video.caixaMostrada = true;
-      }
-      if (tempoRestante > tempoFora && video.caixaMostrada) {
-        botao.style.display = 'none';
-        video.caixaMostrada = false;
-      }
-    }
-
-    botao.addEventListener('click', () => {
-      console.log('Pulando...');
-    });
-
-    function pulaEpsodiosAuto() {
-      video.addEventListener('timeupdate', () => {
-        const tempoRestante = video.duration - video.currentTime;
-        btnProximoEp()
-        if (video.duration <= segundosForaProximoEp) return
-        if (tempoRestante <= segundosForaProximoEp && document.fullscreenElement === video) {
-          const episodes = seriesData[progress.seriesName];
-          const currentIndex = episodes.indexOf(progress.file);
-          const next = episodes[currentIndex + 1];
-          if (next && !video.hasSkipped) {
-            video.hasSkipped = true;
-            carregandoVideo(progress.seriesName, next);
-          }
-        }
-      });
-    }
-
-    function verificPause() {
-      document.addEventListener("fullscreenchange", () => {
-        if (document.fullscreenElement !== video && !video.paused) {
-          controlesEstilo();
-          video.pause();
-        }
-      })
-    }
-
-    async function loadDataSets() {
-      return new Promise((resolve) => {
-        const check = setInterval(() => {
-          if (Object.keys(seriesData).length > 0) {
-            clearInterval(check);
-            resolve(true);
-          }
-        }, 500)
-      });
-    }
-
-    function atualizaBarra(valorAtual) {
-      if (valorAtual > tamanhoVideoAtual) tamanhoVideoAtual = valorAtual;
-      const porcentagem = (valorAtual / tamanhoVideoAtual) * 100;
-      barraProgresso.style.width = porcentagem + '%'
-    }
-
-    function carrosel(setas) {
-      setas.forEach((el) => {
-        el.addEventListener("click", () => {
-          const container = el.parentElement.querySelector(".container-video-item");
-          const direcao = el.classList.contains("move-right") ? -200 : 200;
-          container.scrollBy({
-            left: -direcao,
-            behavior: 'smooth'
-          });
-        });
-      });
-    }
-
-    const iconTelaCheia = () => {
-      document.querySelector(".icon-tela-inteira").onclick = () => video.requestFullscreen();
-    }
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      coletaProgressAtual()
-      const dado = await loadDataSets();
-      const setas = document.querySelectorAll(".move-right, .move-left");
-
-      verificPause();
-      pulaEpsodiosAuto();
-      verificBlur();
-      if (progress.time >= 0) atualizaBarra(progress.time)
-
-      if (dado && progress.seriesName && seriesData[progress.seriesName]) {
-        carregandoVideo(progress.seriesName, progress.file);
-        video.currentTime = progress.time || 0;
-      }
-    });
-
-    function controlesEstilo() {
-      const controles = document.querySelectorAll(".controle")
-      controles.forEach((el) => {
-        el.classList.remove("cont-lig-des")
-      })
-      const p = video.paused ? document.querySelector("#pause") : document.querySelector("#play");
-      if (p) p.classList.add("cont-lig-des");
-    }
-
-    const verificBlur = () => {
-      video.addEventListener('click', () => {
-        video.paused ? video.play() : video.pause();
-        controlesEstilo();
-      });
-
-      document.addEventListener('keydown', (e) => {
-        if (!document.fullscreenElement) return
-        if (e.code === 'Space') {
-          e.preventDefault();
-          video.paused ? video.play() : video.pause();
-        }
-        if (e.code === 'ArrowRight') video.currentTime += 10;
-        if (e.code === 'ArrowLeft') video.currentTime -= 10;
-        controlesEstilo();
-      }, true);
-    };
+  <script src="./app.js">
   </script>
 </body>
 
