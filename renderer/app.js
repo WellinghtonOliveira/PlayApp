@@ -1,401 +1,239 @@
-document.getElementById("play").addEventListener("click", contPlay)
-document.getElementById("voltar").addEventListener("click", contVoltar)
-document.getElementById("pause").addEventListener("click", contPause)
-document.getElementById("avancar").addEventListener("click", contAvancar)
+// 1. Mock de Dados e Configurações
+if (!window.api) {
+    window.api = {
+        getSeries: async () => ({
+            "Cyberpunk": ["Episodio_01.mp4", "Episodio_02.mp4", "Episodio_03.mp4"],
+            "Arcane": ["A_Queda.mp4", "Inimigo_Comum.mp4"],
+            "Breaking Bad": ["Pilot.mp4", "Cat_in_the_bag.mp4"]
+        })
+    };
+}
 
-const barraProgresso = document.getElementById("barra-progresso")
-const botao = document.querySelector(".obj-proximo-elemento")
 const video = document.querySelector('#video-anteriormente');
+const barraProgresso = document.getElementById("barra-progresso");
+const botaoPular = document.getElementById("btn-pular");
 const list = document.querySelector('#video-list');
+const segundosParaMostrarBotao = 45; // Tempo antes do fim para mostrar o botão
 
-const segundosForaProximoEp = 25
-
-let progress
-let tamanhoVideoAtual = 0
+let progress = {
+    seriesName: '',
+    file: '',
+    time: 0
+};
 let seriesData = {};
 
-window.api.getSeries().then(series => {
-    seriesData = series;
+// 2. Inicialização
+window.addEventListener('DOMContentLoaded', async () => {
+    seriesData = await window.api.getSeries();
     renderSeriesList();
+
+    const saved = JSON.parse(localStorage.getItem('progress') || '{}');
+    if (saved.seriesName && seriesData[saved.seriesName]) {
+        carregandoVideo(saved.seriesName, saved.file, saved.time);
+    }
+
+    setupEventListeners();
 });
 
-// controladores do video
-function contPlay() {
-    video.play()
-}
-
-function contPause() {
-    video.pause()
-}
-
-function contVoltar() {
-    controlesEstilo()
-    const episodes = seriesData[progress.seriesName];
-    const currentIndex = episodes.indexOf(progress.file);
-    const retrocesso = episodes[currentIndex - 1];
-    if (retrocesso) carregandoVideo(progress.seriesName, retrocesso);
-    video.pause()
-}
-
-function contAvancar() {
-    controlesEstilo()
-    const episodes = seriesData[progress.seriesName];
-    const currentIndex = episodes.indexOf(progress.file);
-    const proximo = episodes[currentIndex + 1];
-    if (proximo) carregandoVideo(progress.seriesName, proximo);
-    video.pause()
-}
-
+// 3. Renderização da Interface
 function renderSeriesList() {
     list.innerHTML = '';
+    for (const seriesName in seriesData) {
+        const spanContainer = document.createElement('span');
+        spanContainer.className = 'container-span';
 
-    for (const seriesName in seriesData) {// escreve as series pelo nome da pasta
-        const divElement = series()
-        const spanElement = individualSeries()
-        const paragrapyElement = nomeEpsodios(seriesName)
+        const title = document.createElement('p');
+        title.className = 'titulo-element';
+        title.textContent = seriesName;
 
+        const carousel = document.createElement('div');
+        carousel.className = 'container-video-item';
 
-        spanElement.appendChild(paragrapyElement)
-        spanElement.appendChild(divElement);
-        list.appendChild(spanElement)
+        // Botões de navegação
+        const btnL = document.createElement('div');
+        btnL.className = 'move-left';
+        btnL.innerHTML = '<i class="fas fa-chevron-left"></i>';
+        btnL.onclick = () => carousel.scrollBy({
+            left: -400,
+            behavior: 'smooth'
+        });
 
-        seriesData[seriesName].forEach(file => {// escreve os epsodios
-            const { containerEP, nameElement, tambElement } = epsodios(file, seriesName)
+        const btnR = document.createElement('div');
+        btnR.className = 'move-right';
+        btnR.innerHTML = '<i class="fas fa-chevron-right"></i>';
+        btnR.onclick = () => carousel.scrollBy({
+            left: 400,
+            behavior: 'smooth'
+        });
 
-            containerEP.onclick = () => carregandoVideo(seriesName, file)
+        seriesData[seriesName].forEach(file => {
+            const item = document.createElement('div');
+            item.className = 'video-item';
+            item.innerHTML = `
+            <video class="video-tamb-EP" src="videos/${seriesName}/${file}#t=10"></video>
+            <p class="title-EP">${file}</p>
+          `;
+            item.onclick = () => carregandoVideo(seriesName, file);
+            carousel.appendChild(item);
+        });
 
-            containerEP.appendChild(tambElement)
-            containerEP.appendChild(nameElement)
-            divElement.appendChild(containerEP)
-        })
+        spanContainer.append(title, btnL, btnR, carousel);
+        list.appendChild(spanContainer);
     }
 }
 
-// Epsodios 
-const epsodios = (file, seriesName) => {
-    const containerEP = document.createElement('div')
-    const nameElement = document.createElement('p')
-    const tambElement = document.createElement('video')
-
-    nameElement.textContent = file
-    nameElement.className = 'title-EP'
-    tambElement.className = 'video-tamb-EP'
-    tambElement.src = `videos/${seriesName}/${file}`
-    containerEP.classList.add('video-item')
-
-    return { containerEP, nameElement, tambElement }
-}
-
-const nomeEpsodios = (seriesName) => {
-    const paragrapyElement = document.createElement('p')
-
-    paragrapyElement.className = 'titulo-element'
-    paragrapyElement.textContent = seriesName;
-
-    return paragrapyElement
-}
-
-// series
-const individualSeries = () => {
-    const spanElement = document.createElement('span')
-
-    spanElement.className = 'container-span'
-
-    spanElement.appendChild(moveL())
-    spanElement.appendChild(moveR())
-
-    return spanElement
-}
-
-const series = () => {
-    const divElement = document.createElement('div');
-
-    divElement.classList.add('container-video-item');
-
-    return divElement
-}
-
-// rendeniza as setas
-const moveR = () => {
-    const moveRight = document.createElement('div');
-
-    moveRight.className = 'move-right'
-    moveRight.textContent = '>'
-
-    return moveRight
-}
-
-const moveL = () => {
-    const moveLeft = document.createElement('div');
-
-    moveLeft.className = 'move-left'
-    moveLeft.textContent = '<'
-
-    return moveLeft
-}
-
-const coletaProgressAtual = () => {
-    progress = JSON.parse(localStorage.getItem('progress') || '{}')
-}
-
-function carregandoVideo(seriesName, file) {
-
+// 4. Lógica do Player
+function carregandoVideo(seriesName, file, startTime = 0) {
     const progressHistory = JSON.parse(localStorage.getItem('progressHistory') || '{}');
-    const savedTime = progressHistory[`${seriesName}/${file}`] || 0;
+    const timeToSeek = startTime || progressHistory[`${seriesName}/${file}`] || 0;
 
-    const tituloVideoAtual = document.querySelector("#titulo-atual")
-    const tituloSerieAtual = document.querySelector("#titulo-serie")
+    document.querySelector("#titulo-atual").innerText = file;
+    document.querySelector("#titulo-serie").innerText = seriesName;
 
-    tituloVideoAtual.innerText = file
-    tituloSerieAtual.innerText = seriesName
-
-    progress = { seriesName, file, time: savedTime };
-    localStorage.setItem('progress', JSON.stringify(progress));
-
+    progress = {
+        seriesName,
+        file,
+        time: timeToSeek
+    };
     video.src = `videos/${seriesName}/${file}`;
 
-    const onLoadedMetadata = () => {
-        tamanhoVideoAtual = video.duration;
-        video.currentTime = savedTime;
-        atualizaBarra(savedTime);
+    video.onloadedmetadata = () => {
+        video.currentTime = timeToSeek;
+        atualizaControlesUI();
     };
 
-    video.removeEventListener('loadedmetadata', onLoadedMetadata);
-    video.addEventListener('loadedmetadata', onLoadedMetadata);
-
     video.ontimeupdate = () => {
-        const currentTime = video.currentTime;
-        atualizaBarra(currentTime);
+        const current = video.currentTime;
+        const duration = video.duration;
 
+        // Atualiza Barra
+        const pct = (current / duration) * 100;
+        barraProgresso.style.width = `${pct}%`;
+
+        // Salva Progresso
+        progressHistory[`${seriesName}/${file}`] = current;
+        localStorage.setItem('progressHistory', JSON.stringify(progressHistory));
         localStorage.setItem('progress', JSON.stringify({
             seriesName,
             file,
-            time: currentTime
+            time: current
         }));
 
-        progressHistory[`${seriesName}/${file}`] = currentTime;
-        localStorage.setItem('progressHistory', JSON.stringify(progressHistory));
+        // Lógica do botão "Pular Próximo"
+        if (duration - current < segundosParaMostrarBotao) {
+            botaoPular.style.display = 'block';
+        } else {
+            botaoPular.style.display = 'none';
+        }
     };
 
-    //video.controls
-
-    controlesEstilo()
-    iconTelaCheia()
-
-    if (video.hasSkipped) {
-        video.play()
-        controlesEstilo()
-    }
-    video.hasSkipped = false;
+    video.onended = () => contAvancar();
+    video.play();
+    atualizaControlesUI();
 }
 
-function btnProximoEp() {
-    const tempoRestante = video.duration - video.currentTime;
-
-    let tempoFora = segundosForaProximoEp + 20
-
-    if (tempoRestante <= tempoFora && !video.caixaMostrada) {
-        botao.style.display = 'block';
-        video.caixaMostrada = true;
+// 1. Mova a togglePlay para fora (escopo global do script)
+function togglePlay(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
     }
 
-    if (tempoRestante > tempoFora && video.caixaMostrada) {
-        botao.style.display = 'none';
-        video.caixaMostrada = false;
+    if (video.paused) {
+        video.play();
+    } else {
+        video.pause();
     }
+    atualizaControlesUI();
 }
 
-botao.addEventListener('click', () => {
-    // aqui você coloca sua lógica para pular pro próximo episódio
-    console.log('Pulando pro próximo episódio...');
-});
+function setupEventListeners() {
+    const playBtn = document.getElementById("play");
+    const pauseBtn = document.getElementById("pause");
 
-function pulaEpsodiosAuto() {
-    video.addEventListener('timeupdate', () => {
-        const tempoRestante = video.duration - video.currentTime;
-        const segundosFora = segundosForaProximoEp
+    // Cliques nos botões da barra
+    playBtn.onclick = () => { video.play(); atualizaControlesUI(); };
+    pauseBtn.onclick = () => { video.pause(); atualizaControlesUI(); };
 
-        btnProximoEp()
-        if (video.duration <= segundosFora) return
-        if (tempoRestante <= segundosFora && document.fullscreenElement === video) {
-            const episodes = seriesData[progress.seriesName];
-            const currentIndex = episodes.indexOf(progress.file);
-            const next = episodes[currentIndex + 1];
+    // Clique no centro do vídeo
+    video.onclick = togglePlay;
 
-            if (next && !video.hasSkipped) {
-                video.hasSkipped = true;
-                carregandoVideo(progress.seriesName, next);
-            }
-        }
-    });
-}
+    // Atalhos de Teclado Atualizados
+    document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-
-const verificPause = () => {
-    document.addEventListener("fullscreenchange", () => {
-        if (document.fullscreenElement !== video) {
-            if (!video.paused) {
-                controlesEstilo()
-                video.pause() 
-            }
-        } 
-    }) 
-} 
- 
-async function loadDataSets() {
-    return new Promise((resolve) => {
-        const check = setInterval(() => {
-            if (seriesData != {}) {
-                clearInterval(check);
-                resolve(true);
-            }
-        }, 1000)
-    });
-}
-
-// barra de progrsso
-function atualizaBarra(valorAtual) {
-    if (valorAtual > tamanhoVideoAtual) {
-        tamanhoVideoAtual = valorAtual;
-    }
-
-    const porcentagem = (valorAtual / tamanhoVideoAtual) * 100;
-
-    barraProgresso.style.width = porcentagem + '%'
-}
-
-function carrosel(setas) {
-    setas.forEach((el) => {
-        const container = el.parentElement.querySelector(".container-video-item");
-
-        const larguraItem = 200;
-        const totalItens = container.children.length / 2;
-
-        let pos = 0;
-
-        el.addEventListener("click", (e) => {
-            const direcao = el.classList.contains("move-right") ? -1 : 1;
-
-            pos += direcao * larguraItem;
-            container.style.transition = "transform 0.3s ease";
-            container.style.transform = `translateX(${pos}px)`;
-
-            setTimeout(() => {
-                // reset para loop infinito
-                if (pos <= -larguraItem * totalItens) {
-                    container.style.transition = "none";
-                    pos = 0;
-                    container.style.transform = `translateX(${pos}px)`;
-                }
-                if (pos > 0) {
-                    container.style.transition = "none";
-                    pos = -larguraItem * (totalItens - 1);
-                    container.style.transform = `translateX(${pos}px)`;
-                }
-            }, 10);
-        });
-    });
-}
-
-const iconTelaCheia = () => {
-    const icon = document.querySelector(".icon-tela-inteira")
-
-    icon.addEventListener("click", () => {
-        video.requestFullscreen()
-    })
-}
-
-// Inicialização
-window.addEventListener('DOMContentLoaded', async () => {
-    coletaProgressAtual()
-    const dado = await loadDataSets();
-    const setas = document.querySelectorAll(".move-right, .move-left"); // pega todas de uma vez
-
-    // Inicializando funções
-    carrosel(setas)
-    controlesEstilo()
-    verificPause()
-    pulaEpsodiosAuto()
-    verificBlur()
-
-    if (progress.time >= 0) atualizaBarra(progress.time)
-    else atualizaBarra(0)
-
-    if (dado && progress.seriesName && seriesData[progress.seriesName]) {
-        carregandoVideo(progress.seriesName, progress.file);
-        video.currentTime = progress.time || 0;
-    }
-});
-
-// Estilo com js
-function controlesEstilo() {
-    const controles = document.querySelectorAll(".controle")
-
-    controles.forEach((el) => {
-        el.addEventListener("click", function () {
-            controles.forEach((a) => a.classList.remove("cont-lig-des"))
-            el.classList.add("cont-lig-des")
-            return
-        })
-
-        controles.forEach((a) => a.classList.remove("cont-lig-des"))
-        const p = document.querySelector("#pause")
-        p.classList.add("cont-lig-des")
-    })
-}
-
-const verificBlur = () => {
-    let clickTimeout;
-
-    video.addEventListener('click', () => {
-        clearTimeout(clickTimeout);
-        clickTimeout = setTimeout(() => {
-            video.paused != true ? video.play() : video.pause()
-        }, 100);
-    });
-
-    
-    const onKeyDown = (e) => {
-        if (!document.fullscreenElement) return
-        e.preventDefault()
-
-        const code = e.code
-        const keyLower = (e.key || '').toLowerCase();
- 
-        switch (code) {
+        switch (e.code) {
             case 'Space':
-                video.paused ? video.play() : video.pause();
+                e.preventDefault();
+                togglePlay();
+                break;
+            case 'KeyF':
+                e.preventDefault();
+                if (!document.fullscreenElement) {
+                    video.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
                 break;
             case 'ArrowRight':
-                video.currentTime = Math.min(video.duration || Infinity, video.currentTime + 10);
+                e.preventDefault();
+                video.currentTime += 10;
                 break;
             case 'ArrowLeft':
-                video.currentTime = Math.max(0, video.currentTime - 10);
+                e.preventDefault();
+                video.currentTime -= 10;
                 break;
-            case 'KeyF': // tecla "f"
-                if (!document.fullscreenElement) video.requestFullscreen();
-                else document.exitFullscreen();
+            // --- NOVOS ATALHOS DE VOLUME ---
+            case 'ArrowUp':
+                e.preventDefault();
+                // Aumenta o volume em 0.1 (10%), limitando ao máximo de 1.0
+                video.volume = Math.min(1, video.volume + 0.05);
+                console.log("Volume:", Math.round(video.volume * 100) + "%");
                 break;
-            case 'KeyM': // tecla "m"
-                video.muted ? video.muted = false : video.muted = true
+            case 'ArrowDown':
+                e.preventDefault();
+                // Diminui o volume em 0.1 (10%), limitando ao mínimo de 0.0
+                video.volume = Math.max(0, video.volume - 0.05);
+                console.log("Volume:", Math.round(video.volume * 100) + "%");
+                break;
+            // Tecla M para Mudo (Mute)
+            case 'KeyM':
+                e.preventDefault();
+                video.muted = !video.muted;
                 break;
         }
+    });
 
-        // fallback: caso algum navegador entregue 'key' em vez de 'code'
-        if (keyLower === 'f') {
-            if (!document.fullscreenElement) video.requestFullscreen();
-            else document.exitFullscreen();
-        } else if (keyLower === 'm') {
-            video.muted ? video.muted = false : video.muted = true
-        }
- 
-         
-    };
+    // Outros botões
+    document.getElementById("avancar").onclick = contAvancar;
+    document.getElementById("voltar").onclick = contVoltar;
+    document.getElementById("fullscreen-btn").onclick = () => video.requestFullscreen();
+    botaoPular.onclick = contAvancar;
+}
 
-    document.addEventListener('keydown', onKeyDown, true);
+function atualizaControlesUI() {
+    document.getElementById("play").classList.toggle("cont-lig-des", !video.paused);
+    document.getElementById("pause").classList.toggle("cont-lig-des", video.paused);
 
-    video.setAttribute('tabindex', '-1');
-    video.style.outline = 'none';
-}; 
+    // REMOVE O FOCO DE QUALQUER COISA: 
+    // Isso impede que o 'Espaço' ative o último botão clicado
+    if (document.activeElement) {
+        document.activeElement.blur();
+    }
+}
 
-// TODO lembrar de colocar outras estenções por exemplo mkv
+function contAvancar() {
+    const episodes = seriesData[progress.seriesName];
+    const idx = episodes.indexOf(progress.file);
+    if (idx < episodes.length - 1) {
+        carregandoVideo(progress.seriesName, episodes[idx + 1]);
+    }
+}
+
+function contVoltar() {
+    const episodes = seriesData[progress.seriesName];
+    const idx = episodes.indexOf(progress.file);
+    if (idx > 0) {
+        carregandoVideo(progress.seriesName, episodes[idx - 1]);
+    }
+}
