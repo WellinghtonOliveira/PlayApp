@@ -1,10 +1,12 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-require('electron-reload')(__dirname, {
-  electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
-  // ignora node_modules e arquivos temporários
-  ignored: /node_modules|[\/\\]\./
-});
+
+if (!app.isPackaged) {
+  require('electron-reload')(__dirname, {
+    electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
+    ignored: /node_modules|[\/\\]\./
+  });
+}
 
 const fs = require('fs');
 
