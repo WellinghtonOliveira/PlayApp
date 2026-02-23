@@ -14,6 +14,7 @@ const barraProgresso = document.getElementById("barra-progresso");
 const botaoPular = document.getElementById("btn-pular");
 const list = document.querySelector('#video-list');
 const segundosParaMostrarBotao = 45; // Tempo antes do fim para mostrar o botão
+let userName = document.querySelector("#nameUser")
 
 let progress = {
     seriesName: '',
@@ -22,18 +23,30 @@ let progress = {
 };
 let seriesData = {};
 
+function initUserName() {
+    const savedName = localStorage.getItem("userName");
+    userName.value = savedName || "User";
+
+    userName.addEventListener("input", () => {
+        localStorage.setItem("userName", userName.value);
+    });
+}
+
 // 2. Inicialização
 window.addEventListener('DOMContentLoaded', async () => {
     seriesData = await window.api.getSeries();
     renderSeriesList();
+
 
     const saved = JSON.parse(localStorage.getItem('progress') || '{}');
     if (saved.seriesName && seriesData[saved.seriesName]) {
         carregandoVideo(saved.seriesName, saved.file, saved.time);
     }
 
+    initUserName()
     setupEventListeners();
 });
+
 
 // 3. Renderização da Interface
 function renderSeriesList() {
