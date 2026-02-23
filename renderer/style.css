@@ -1,277 +1,285 @@
+*:focus {
+    outline: none !important;
+}
+
+video:focus-visible {
+    outline: none;
+}
+
 :root {
-    --bg-color: #121418;
-    --card-bg: #1e2126;
-    --primary-color: #f3b13a;
+    --bg-color: #0f1114;
+    --card-bg: #1a1d23;
+    --primary: #f3b13a;
     --text-main: #ffffff;
     --text-dim: #9ca3af;
-    --nav-bg: #1a1d21;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
+
 
 body {
-    background-color: var(--bg-color);
+    background: var(--bg-color);
     color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
     padding-bottom: 100px;
-    /* Espaço para o player fixo */
+    overflow-x: hidden;
 }
 
-/* Navbar */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    background: var(--nav-bg);
+    background: #16181d;
     border-bottom: 1px solid #2d3138;
 }
 
 .logo {
-    font-size: 1.5rem;
     font-weight: 700;
-}
-
-.logo i {
-    color: var(--primary-color);
-    margin-right: 8px;
+    font-size: 1.4rem;
 }
 
 .logo span {
-    color: var(--primary-color);
+    color: var(--primary);
 }
 
-.search-bar {
-    background: #25292e;
-    padding: 8px 15px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    width: 40%;
-}
-
-.search-bar input {
-    background: transparent;
-    border: none;
-    color: white;
-    margin-left: 10px;
+.main-video-section {
     width: 100%;
-    outline: none;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    position: relative;
 }
 
-.search-bar button {
-    background: var(--primary-color);
+#video-anteriormente {
+    max-width: 1000px;
+    width: 100%;
+    aspect-ratio: 16/9;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+}
+
+.obj-proximo-elemento {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    background: var(--primary);
+    color: #000;
     border: none;
-    padding: 6px 15px;
+    padding: 12px 24px;
     border-radius: 5px;
+    font-weight: bold;
     cursor: pointer;
-    font-weight: 600;
+    z-index: 10;
+    display: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
-.user-menu {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    color: var(--text-dim);
-}
-
-.profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: white;
-}
-
-.profile img {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-}
-
-/* Container e Seções */
 .container {
-    max-width: 1200px;
-    margin: 30px auto;
-    padding: 0 20px;
+    padding: 20px 40px;
 }
 
-.row-section {
+.container-span {
+    display: block;
+    position: relative;
     margin-bottom: 40px;
 }
 
-.row-section h3 {
-    margin-bottom: 20px;
+.titulo-element {
     font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-weight: 600;
+    margin-bottom: 15px;
 }
 
-.row-section h3 span {
-    font-size: 0.8rem;
-    color: var(--text-dim);
-}
-
-/* Cards de Séries */
-.cards-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 20px;
-}
-
-.card {
-    background: var(--card-bg);
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-}
-
-.card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    opacity: 0.7;
-}
-
-.card-info {
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
-}
-
-/* Continue Watching */
-.episodes-flex {
+.container-video-item {
     display: flex;
     gap: 15px;
     overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
 }
 
-.ep-card {
-    min-width: 250px;
+.container-video-item::-webkit-scrollbar {
+    display: none;
+}
+
+.video-item {
+    min-width: 220px;
     background: var(--card-bg);
-    padding: 20px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    border-left: 4px solid transparent;
+    border-radius: 8px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: 0.2s;
+    flex-shrink: 0;
 }
 
-.ep-card.active {
-    border-left-color: var(--primary-color);
+.video-item:hover {
+    transform: scale(1.03);
     background: #25292e;
+    filter: brightness(1.1);
 }
 
-.ep-number {
-    font-size: 2rem;
-    font-weight: 800;
-    opacity: 0.8;
+.video-tamb-EP {
+    width: 100%;
+    height: 125px;
+    object-fit: cover;
+    /* Evita que a thumbnail pareça pixelada ao esticar */
+    image-rendering: -webkit-optimize-contrast;
+    filter: brightness(0.8);
+    /* Deixa as capas mais discretas, destacando ao dar hover */
+    transition: filter 0.3s;
 }
 
-.series-title {
-    display: block;
-    font-weight: 600;
-}
-
-.file-name {
-    font-size: 0.8rem;
+.title-EP {
+    padding: 10px;
+    font-size: 0.85rem;
     color: var(--text-dim);
 }
 
-/* Watchlist */
-.watchlist-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.list-item {
-    background: var(--card-bg);
-    padding: 20px;
-    border-radius: 12px;
+.move-left,
+.move-right {
+    position: absolute;
+    top: 50%;
+    z-index: 5;
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--primary);
+    width: 40px;
+    height: 40px;
     display: flex;
-    gap: 20px;
-}
-
-.thumb-placeholder {
-    width: 80px;
-    height: 80px;
-    background: #333;
-    border-radius: 8px;
-}
-
-.btn-details {
-    margin-top: 10px;
-    background: var(--primary-color);
-    border: none;
-    padding: 5px 15px;
-    border-radius: 5px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     cursor: pointer;
+    transform: translateY(-50%);
 }
 
-/* Player Bar */
+.move-left {
+    left: -20px;
+}
+
+.move-right {
+    right: -20px;
+}
+
 .player-bar {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: #16181d;
-    height: 80px;
+    height: 90px;
+    background: #121418;
+    border-top: 1px solid #2d3138;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    border-top: 1px solid #2d3138;
+    padding: 0 30px;
+    z-index: 100;
 }
 
 .now-playing {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    width: 250px;
+    width: 25%;
 }
 
-.now-playing img {
-    width: 45px;
-    border-radius: 5px;
+#titulo-serie {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--primary);
+}
+
+#titulo-atual {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin: 0;
 }
 
 .player-controls {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.buttons-group {
     display: flex;
     align-items: center;
-    gap: 20px;
-    flex-grow: 1;
-    justify-content: center;
+    gap: 25px;
 }
 
-.play-main {
-    font-size: 2rem;
-    color: var(--primary-color);
+.controle {
+    font-size: 1.3rem;
+    color: var(--text-dim);
+    cursor: pointer;
 }
 
-.progress-container {
-    width: 40%;
-    height: 4px;
+.cont-lig-des {
+    color: var(--primary) !important;
+}
+
+.progress-wrapper {
+    width: 100%;
+    max-width: 600px;
+    height: 5px;
     background: #333;
-    border-radius: 2px;
+    border-radius: 10px;
 }
 
-.progress-bar {
-    width: 35%;
+#barra-progresso {
     height: 100%;
-    background: var(--primary-color);
+    background: var(--primary);
+    width: 0%;
+    border-radius: 10px;
 }
 
 .extra-controls {
+    width: 25%;
     display: flex;
-    gap: 20px;
-    width: 250px;
     justify-content: flex-end;
+}
+
+.extra-controls > i:hover {
+    cursor: pointer;
+    transition: .1s ease-in-out;
+    transform: scale(1.1);
+}
+
+.user-name-wrapper {
+    position: relative;
+    width: 170px;
+    margin-left: auto;
+}
+
+/* Input */
+#nameUser {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    box-sizing: border-box;
+    color: #ffffff;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 500;
+    font-family: 'Segoe UI', 'Inter', sans-serif;
+    padding: 6px 0;
+    outline: none;
+}
+
+/* Remove qualquer aparência padrão */
+#nameUser:focus {
+    outline: none;
+}
+
+/* Linha laranja animada */
+.focus-line {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: #f5b942;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+/* Quando focar */
+#nameUser:focus+.focus-line {
+    width: 100%;
 }
