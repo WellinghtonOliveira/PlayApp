@@ -128,7 +128,7 @@ function carregandoVideo(seriesName, file, startTime = 0) {
     };
 
     video.onended = () => contAvancar();
-    video.play();
+    video.pause();
     atualizaControlesUI();
 }
 
