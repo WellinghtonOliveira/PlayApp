@@ -28,6 +28,8 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
     }
   });
+
+  win.maximize();
   win.loadFile('renderer/index.html');
 }
 
