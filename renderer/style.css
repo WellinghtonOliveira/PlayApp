@@ -14,7 +14,10 @@ video:focus-visible {
     --text-dim: #9ca3af;
 }
 
-
+.addSeriesMovies {
+    width: 100%;
+    justify-content: center;
+}
 
 body {
     background: var(--bg-color);
