@@ -6,7 +6,7 @@ if (!app.isPackaged) {
     electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
     ignored: /node_modules|[\/\\]\./
   });
-}
+} 
 
 const fs = require('fs');
 
