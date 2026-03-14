@@ -14,7 +14,7 @@ video:focus-visible {
     --text-dim: #9ca3af;
 }
 
-.addSeriesMovies {
+.addSeriesMovies { 
     width: 100%;
     justify-content: center;
 }
