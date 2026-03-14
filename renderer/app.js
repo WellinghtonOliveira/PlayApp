@@ -7,7 +7,7 @@ if (!window.api) {
             "Breaking Bad": ["Pilot.mp4", "Cat_in_the_bag.mp4"]
         })
     };
-}
+} 
 
 const video = document.querySelector('#video-anteriormente');
 const barraProgresso = document.getElementById("barra-progresso");
