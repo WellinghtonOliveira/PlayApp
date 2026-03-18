@@ -18,7 +18,7 @@ const baseDir = app.isPackaged
 function ensureVideoFolder() {
   if (!fs.existsSync(baseDir)) {
     console.log("Pasta não encontrada. Criando em:", baseDir);
-    fs.mkdirSync(baseDir, { recursive: true });
+    fs.mkdirSync(baseDir, { recursive: true }); 
   }
 }
 
