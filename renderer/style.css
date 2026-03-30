@@ -14,9 +14,64 @@ video:focus-visible {
     --text-dim: #9ca3af;
 }
 
-.addSeriesMovies { 
+.addSeriesMovies {
     width: 100%;
+    display: flex;
+}
+
+.a {
+    width: 100px;
+    height: 30px;
+    transition: 4s;
+    transform-style: preserve-3d;
+    transform: perspective(1000px) rotateX(0deg);
+    margin: 0 auto;
+}
+
+.a:hover {
+    transform: perspective(1000px) rotateX(360deg);
+}
+
+.a span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    color: #000;
+    background: rgba(255, 255, 255, 0.9);
+    font-family: sans-serif;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 2px;
+    transition: 0.5s;
+    border: 2px solid #000;
+    box-sizing: border-box;
+    box-shadow: insert 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.a:hover span {
+    color: #fff;
+    background: rgba(3, 169, 244, 0.8);
+}
+
+.a span:nth-child(1) {
+    transform: rotateX(360deg) translateZ(25px);
+}
+
+.a span:nth-child(2) {
+    transform: rotateX(270deg) translateZ(25px);
+}
+
+.a span:nth-child(3) {
+    transform: rotateX(180deg) translateZ(25px);
+}
+
+.a span:nth-child(4) {
+    transform: rotateX(90deg) translateZ(25px);
 }
 
 body {
@@ -237,7 +292,7 @@ body {
     justify-content: flex-end;
 }
 
-.extra-controls > i:hover {
+.extra-controls>i:hover {
     cursor: pointer;
     transition: .1s ease-in-out;
     transform: scale(1.1);
