@@ -1,33 +1,34 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
+const fs = require('fs');
+const Store = require('electron-store').default;
+
+const store = new Store();
+
+let baseDir = store.get('PATH') || path.join(__dirname, 'renderer/videos');
 
 if (!app.isPackaged) {
   require('electron-reload')(__dirname, {
     electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
     ignored: /node_modules|[\/\\]\./
   });
-} 
+}
 
-const fs = require('fs');
-
-const baseDir = app.isPackaged
-  ? path.join(process.resourcesPath, 'videos')
-  : path.join(__dirname, 'renderer/videos');
-
-// 2. Função para garantir que a pasta exista
 function ensureVideoFolder() {
   if (!fs.existsSync(baseDir)) {
-    console.log("Pasta não encontrada. Criando em:", baseDir);
-    fs.mkdirSync(baseDir, { recursive: true }); 
+    fs.mkdirSync(baseDir, { recursive: true });
   }
 }
 
 function createWindow() {
+
   const win = new BrowserWindow({
-    width: 1000,
-    height: 700,
+    width: 1200,
+    height: 800,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false
     }
   });
 
@@ -35,31 +36,56 @@ function createWindow() {
   win.loadFile('renderer/index.html');
 }
 
-// Inicializa o app e verifica a pasta
 app.whenReady().then(() => {
-  ensureVideoFolder(); // Cria a pasta assim que o app abre
+  ensureVideoFolder();
   createWindow();
 });
 
-ipcMain.handle('get-series', async () => {
-  // Garantia extra: se o usuário deletar a pasta com o app aberto, ela recria aqui
-  ensureVideoFolder();
 
-  const seriesFolders = fs.readdirSync(baseDir, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
+// escolher pasta
+ipcMain.handle("set-path", async () => {
 
-  const result = {};
-  for (const folder of seriesFolders) {
-    const seriesPath = path.join(baseDir, folder);
+  const result = await dialog.showOpenDialog({
+    properties: ["openDirectory"]
+  });
 
-    // Busca arquivos .mp4 ou .mkv
-    const episodes = fs.readdirSync(seriesPath)
-      .filter(f => f.endsWith('.mp4') || f.endsWith('.mkv'))
-      .sort();
+  if (result.canceled) return null;
 
-    result[folder] = episodes;
+  baseDir = result.filePaths[0];
+
+  store.set("PATH", baseDir);
+
+  return baseDir;
+});
+
+
+// listar séries
+ipcMain.handle("get-series", async () => {
+
+  if (!baseDir || !fs.existsSync(baseDir)) {
+    return {};
   }
 
-  return result;
+  const series = {};
+
+  const folders = fs.readdirSync(baseDir, { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .map(d => d.name);
+
+  for (const folder of folders) {
+
+    const folderPath = path.join(baseDir, folder);
+
+    const files = fs.readdirSync(folderPath)
+      .filter(f => f.endsWith(".mp4") || f.endsWith(".mkv"))
+      .sort()
+      .map(file => ({
+        name: file,
+        path: path.join(folderPath, file)
+      }));
+
+    series[folder] = files;
+  }
+
+  return series;
 });
