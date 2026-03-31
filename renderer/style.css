@@ -22,7 +22,7 @@ video:focus-visible {
 .a {
     width: 100px;
     height: 30px;
-    transition: 4s;
+    transition: 3s;
     transform-style: preserve-3d;
     transform: perspective(1000px) rotateX(0deg);
     margin: 0 auto;
@@ -48,14 +48,15 @@ video:focus-visible {
     font-size: 12px;
     letter-spacing: 2px;
     transition: 0.5s;
-    border: 2px solid #000;
+    border: 3px solid #000;
     box-sizing: border-box;
     box-shadow: insert 0 20px 50px rgba(0, 0, 0, 0.2);
 }
 
 .a:hover span {
-    color: #fff;
+    color: rgba(255, 255, 255, 1);
     background: rgba(3, 169, 244, 0.8);
+    cursor: pointer;
 }
 
 .a span:nth-child(1) {
