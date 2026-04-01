@@ -18,12 +18,16 @@
   "build": {
     "appId": "com.playapp.app",
     "productName": "PlayApp",
-    "files": [
-      "**/*",
-      "!renderer/videos/**/*"
-    ],
+    "directories": {
+      "output": "dist"
+    },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "renderer/assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     }
   },
   "dependencies": {

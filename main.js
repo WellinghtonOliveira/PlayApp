@@ -1,11 +1,28 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const Store = require('electron-store').default;
 
-const store = new Store();
+// Definindo defaults para evitar undefined
+const store = new Store({
+  defaults: {
+    PATH: null
+  }
+});
 
-let baseDir = store.get('PATH') || path.join(__dirname, 'renderer/videos');
+// Função para obter o baseDir de forma segura
+function getBaseDir() {
+  const savedPath = store.get('PATH');
+
+  if (savedPath && fs.existsSync(savedPath)) {
+    return savedPath;
+  }
+
+  // Usa pasta do usuário no appData (userData)
+  return path.join(app.getPath('userData'), 'videos');
+}
+
+let baseDir = getBaseDir();
 
 if (!app.isPackaged) {
   require('electron-reload')(__dirname, {
@@ -20,11 +37,12 @@ function ensureVideoFolder() {
   }
 }
 
+Menu.setApplicationMenu(null);
 function createWindow() {
-
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: path.join(__dirname, 'renderer/assets/icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -41,10 +59,8 @@ app.whenReady().then(() => {
   createWindow();
 });
 
-
 // escolher pasta
 ipcMain.handle("set-path", async () => {
-
   const result = await dialog.showOpenDialog({
     properties: ["openDirectory"]
   });
@@ -58,9 +74,11 @@ ipcMain.handle("set-path", async () => {
   return baseDir;
 });
 
-
 // listar séries
 ipcMain.handle("get-series", async () => {
+  const videoExtensions = [
+    '.mp4', '.mkv', '.avi', '.mov', '.webm', '.flv', '.wmv'
+  ];
 
   if (!baseDir || !fs.existsSync(baseDir)) {
     return {};
@@ -73,11 +91,16 @@ ipcMain.handle("get-series", async () => {
     .map(d => d.name);
 
   for (const folder of folders) {
-
     const folderPath = path.join(baseDir, folder);
 
     const files = fs.readdirSync(folderPath)
-      .filter(f => f.endsWith(".mp4") || f.endsWith(".mkv"))
+      .filter(file => {
+        const fullPath = path.join(folderPath, file);
+        const ext = path.extname(file).toLowerCase();
+
+        return fs.statSync(fullPath).isFile() &&
+          videoExtensions.includes(ext);
+      })
       .sort()
       .map(file => ({
         name: file,
